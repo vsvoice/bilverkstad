@@ -1,0 +1,19 @@
+header {
+    padding: 0;
+}
+
+.hero-section {
+    background-image: url("../img/slice-pizza-with-black-background_4k.webp");
+    background-position: center right;
+    background-repeat: no-repeat;
+    background-size: cover;
+    height: 39.401041vw;
+    min-height: 290px;
+    /*aspect-ratio: 3840 / 1513;*/
+    color: whitesmoke;
+    text-shadow: 1px 1px 4px black;
+}
+
+.mw-500 {
+    max-width: 500px;
+}
