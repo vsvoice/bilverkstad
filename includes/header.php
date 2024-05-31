@@ -74,7 +74,7 @@ $adminMenuLinks = array(
 					<a class='nav-link' href='index.php'>Log in</a>
 				</li>
 				<li class='nav-item'>
-					<a class='nav-link' href='register.php'>Sign up</a>
+					<a class='nav-link' href='newuser.php'>New User</a>
 				</li>";
 			}
 		
