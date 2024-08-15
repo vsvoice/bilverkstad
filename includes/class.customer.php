@@ -1,6 +1,6 @@
 <?php
 
-class customer {
+class Customer {
 
     private $pdo;
 
