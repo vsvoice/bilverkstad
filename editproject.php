@@ -89,7 +89,7 @@ include_once 'includes/header.php';
 	<label class="h4 my-3">Arbetsbeskrivning</label>
 	<textarea class="form-control"></textarea>
 
-	<submit class="btn btn-primary my-3">Redigera</submit>
+	<input type="submit" class="btn btn-primary my-3" value="Redigera">
 	</form>
 	</div>
 </div>
