@@ -8,10 +8,10 @@ include_once 'includes/header.php';
 <div class="container">
 
 	<div class="mw-500 mx-auto">
-		<h1 class="my-5">Projekt</h1>
+		<h1 class="my-5">Redigera Projekt</h1>
 		<h2 class="h4 my-3">Bil</h2>
 
-		<button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#exampleModal">
+		<button type="button" class="btn btn-primary my-3" data-bs-toggle="modal" data-bs-target="#exampleModal">
 			Bläddra bland bilar
 		</button>
 
@@ -43,7 +43,7 @@ include_once 'includes/header.php';
 
 	<h2 class="h4 my-3">Kund</h2>
 
-	<button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#exampleModal">
+	<button type="button" class="btn btn-primary my-3" data-bs-toggle="modal" data-bs-target="#exampleModal">
 			Bläddra bland kunder
 		</button>
 
