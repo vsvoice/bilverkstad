@@ -1,7 +1,9 @@
 <?php
 include_once 'includes/header.php';
 
-
+if (isset($_POST['new-car-submit'])) {
+    $feedbackMessages = $car->insertNewCar($_POST['brand'], $_POST['model'], $_POST['license']);
+}
 ?>
 
 

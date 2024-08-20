@@ -1,7 +1,11 @@
 <?php
 require_once 'includes/class.user.php';
+require_once 'includes/class.car.php';
+require_once 'includes/class.customer.php';
 require_once 'includes/config.php';
 $user = new User($pdo);
+$car = new Car($pdo);
+$customer = new Customer($pdo);
 
 if(isset($_GET['logout'])) {
 	$user->logout();
@@ -9,17 +13,25 @@ if(isset($_GET['logout'])) {
 
 $menuLinks = array(
     array(
-        "title" => "Home",
+        "title" => "Startsida",
         "url" => "home.php"
 	),
 	array(
-        "title" => "Account",
-        "url" => "account.php"
+        "title" => "Skapa projekt",
+        "url" => "newproject.php"
+	),
+	array(
+        "title" => "Kunder",
+        "url" => "customers.php"
+	),
+	array(
+        "title" => "Bilar",
+        "url" => "cars.php"
 	)
 );
 $adminMenuLinks = array(
     array(
-        "title" => "Admin Page",
+        "title" => "Administratör",
         "url" => "admin.php"
     )
 );
