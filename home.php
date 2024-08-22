@@ -9,12 +9,32 @@ $test = $user->checkUserRole(10);
 
 ?>
 
-<div class="container">
+<div class="container text-center">
 
-<?php
-echo "<h2>Welcome, {$_SESSION['user_name']}!</h2>";
-?>
-<p>You have been welcomed</p>
+    <div class="row my-3">
+        <h2>Pågående</h2>
+            <div class="col">
+            </div>  
+    </div>
+    <div class="row my-3">
+        <h2>I kö</h2>
+            <div class="col">
+            </div>
+    </div>
+</div>
+
+<div class="container d-none">
+
+    <div class="row my-3">
+        <h2>Klar för Fakturering</h2>
+            <div class="col">
+            </div>  
+    </div>
+    <div class="row my-3">
+        <h2>Fakturerad</h2>
+            <div class="col">
+            </div>
+    </div>
 </div>
 
 <?php
