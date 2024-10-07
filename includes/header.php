@@ -1,8 +1,9 @@
 <?php
+require_once 'includes/config.php';
 require_once 'includes/class.user.php';
 require_once 'includes/class.car.php';
 require_once 'includes/class.customer.php';
-require_once 'includes/config.php';
+
 $user = new User($pdo);
 $car = new Car($pdo);
 $customer = new Customer($pdo);
