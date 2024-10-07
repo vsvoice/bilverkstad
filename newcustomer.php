@@ -2,7 +2,15 @@
 include_once 'includes/header.php';
 
 if (isset($_POST['new-customer-submit'])) {
-    $feedbackMessages = $customer->insertNewCustomer($_POST['fname'], $_POST['lname'], $_POST['phone'], $_POST['email'], $_POST['address'], $_POST['zip'], $_POST['area']);
+    $feedbackMessages = $customer->insertNewCustomer(
+		$user->cleanInput($_POST['fname']), 
+		$user->cleanInput($_POST['lname']), 
+		$user->cleanInput($_POST['phone']), 
+		$user->cleanInput($_POST['email']), 
+		$user->cleanInput($_POST['address']), 
+		$user->cleanInput($_POST['zip']), 
+		$user->cleanInput($_POST['area'])
+	);
 }
 
 ?>

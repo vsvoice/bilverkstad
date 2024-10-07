@@ -11,17 +11,7 @@ class Car {
         $this->pdo = $pdo;
     }
 
-    private function cleanInput($data) {
-        $data = trim($data);
-        $data = stripslashes($data);
-        $data = htmlspecialchars($data);
-        return $data;
-    }
-
-    public function insertNewCar($brand, $model, $license) {
-        $brand = $this->cleanInput($brand);
-        $model = $this->cleanInput($model);
-        $license = $this->cleanInput($license);
+    public function insertNewCar(string $brand, string $model, string $license) {
 
         $stmt_insertNewCar = $this->pdo->prepare('INSERT INTO table_cars (car_brand, car_model, car_license)
             VALUES 
@@ -44,6 +34,33 @@ class Car {
             }
     }
 
+    public function selectAllCars() {
+        $allCarsArray = $this->pdo->query("SELECT * FROM table_cars ORDER BY car_id DESC")->fetchAll();
+        return $allCarsArray;
+    }
+
+    public function populateCarField($carsArray) {
+
+        echo "<div class='list-group list-group-flush'>";
+
+        foreach ($carsArray as $car) {
+			echo "<button type='button' class='list-group-item list-group-item-action px-4' aria-current='true' data-bs-dismiss='modal' value='{$car['car_id']}' onclick='selectProjectCar(this.value)'>
+                <div class='row'>
+                    <div class='col-5'>{$car['car_brand']} {$car['car_model']}</div>
+                    <div class='col-5 text-truncate'>{$car['car_license']}</div>
+                </div>
+            </button>";
+        }
+
+        echo "</div>";
+    }
+
+    public function getCarDataById($id) {
+        // Prepare and execute the query to fetch user data by ID
+        $carData = $this->pdo->query("SELECT * FROM table_cars WHERE car_id = $id")->fetch();
+        
+        echo "<span id='car-brand'>{$carData['car_brand']}</span> <span id='car-model'>{$carData['car_model']}</span> <span class='ms-4' id='car-license'>{$carData['car_license']}</span>";
+    }
 }
 
 ?>

@@ -15,7 +15,7 @@ class User {
         $this->pdo = $pdo;
     }
 
-    private function cleanInput($data) {
+    public function cleanInput($data) {
         $data = trim($data);
         $data = stripslashes($data);
         $data = htmlspecialchars($data);
