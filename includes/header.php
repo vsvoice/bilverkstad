@@ -1,11 +1,14 @@
 <?php
+require_once 'includes/config.php';
 require_once 'includes/class.user.php';
 require_once 'includes/class.car.php';
 require_once 'includes/class.customer.php';
+require_once 'includes/class.project.php';
 require_once 'includes/config.php';
 $user = new User($pdo);
 $car = new Car($pdo);
 $customer = new Customer($pdo);
+$project = new Project($pdo);
 
 if(isset($_GET['logout'])) {
 	$user->logout();
@@ -78,15 +81,15 @@ $adminMenuLinks = array(
 				}
 				echo "
 				<li class='nav-item'>
-					<a class='nav-link' href='?logout=1.php'>Log Out</a>
+					<a class='nav-link' href='?logout=1.php'>Logga ut</a>
 				</li>";
 			} else {
 				echo "
 				<li class='nav-item'>
-					<a class='nav-link' href='index.php'>Log in</a>
+					<a class='nav-link' href='index.php'>Logga in</a>
 				</li>
 				<li class='nav-item'>
-					<a class='nav-link' href='newuser.php'>New User</a>
+					<a class='nav-link' href='newuser.php'>Ny användare</a>
 				</li>";
 			}
 		

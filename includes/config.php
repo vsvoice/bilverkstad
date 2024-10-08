@@ -1,7 +1,7 @@
 <?php
 session_start();
 $_SESSION['test'] = "Sessionen är igång";
-$host = '127.0.0.1';
+$host = 'localhost';
 $db   = '2024_adv_car_workshop';
 $user = 'root';
 $pass = '';
