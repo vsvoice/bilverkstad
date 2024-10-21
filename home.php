@@ -18,13 +18,13 @@ $projects_by_status = [];
 $status_condition = [];
 if ($isBoss || $isAdmin) {
     // Boss and Admin see all projects
-    $status_condition = [1, 2, 3, 4];
+    $status_condition = [1, 2, 3, 4, 5, 6, 7];
 } elseif ($isAccountant) {
     // Accountants see projects with status 3 and 4
-    $status_condition = [3, 4];
+    $status_condition = [3, 4, 5];
 } elseif ($isMechanic) {
     // Mechanics see projects with status 1 and 2
-    $status_condition = [1, 2];
+    $status_condition = [1, 2, 3];
 }
 
 // Fetch projects from the database with joins based on the status condition
@@ -58,10 +58,13 @@ if (!empty($status_condition)) {
         <!-- Array of project statuses -->
         <?php
         $statuses = [
-            1 => "Pågående",
-            2 => "I kö",
-            3 => "Klar för Fakturering",
-            4 => "Fakturerad"
+            1 => "I Kö",
+            2 => "Pågående",
+            3 => "Pausad",
+            4 => "Klar för Fakturering",
+            5 => "Fakturerad",
+            6 => "Betalad",
+            7 => "Avbokad"
         ];
 
         foreach ($statuses as $status_id => $status_title): ?>

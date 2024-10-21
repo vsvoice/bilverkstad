@@ -70,6 +70,22 @@ class Project {
             return false; // No rows affected or failed
         }
     }
+
+public function updateProjectStatus(int $projectId, int $statusId) {
+    // Update the status_id_fk of the project
+    $stmt = $this->pdo->prepare('UPDATE table_projects 
+        SET status_id_fk = :statusId
+        WHERE project_id = :projectId');
+    $stmt->bindParam(':statusId', $statusId, PDO::PARAM_INT);
+    $stmt->bindParam(':projectId', $projectId, PDO::PARAM_INT);
+    $stmt->execute();
+
+    if ($stmt->rowCount() > 0) {
+        return true;  // Successfully updated the status
+    } else {
+        return false; // No rows affected or failed
+    }
+}
 }
 
 ?>
