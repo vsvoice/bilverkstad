@@ -1,100 +1,184 @@
 <?php
 include_once 'includes/header.php';
 
-// Initialize the Project class
-$projectClass = new Project($pdo);
-
 // Get project_id from URL
 if (isset($_GET['project_id'])) {
-    $project_id = $_GET['project_id'];
+    $projectId = (int)$_GET['project_id'];
     
     // Fetch project data
-    $project = $projectClass->getProjectById($project_id);
+    $projectDataArray = $project->selectSingleProject($projectId);
     
-    if (!$project) {
+    if (!$projectDataArray) {
         echo "Project not found!";
         exit;
     }
-} else {
-    echo "No project selected!";
-    exit;
+} 
+else {
+	echo "No project selected!";
+	exit;
 }
 
+var_dump($projectDataArray);
+
+$customersArray = $customer->selectAllCustomers();
+$carsArray = $car->selectAllCars();
+
 // Handle form submission to update project
-if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-    // Capture form values
-    $car_model = $_POST['car_model'];
-    $reg_number = $_POST['reg_number'];
-    $customer_name = $_POST['customer_name'];
-    $customer_phone = $_POST['customer_phone'];
-    $customer_email = $_POST['customer_email'];
-    $customer_address = $_POST['customer_address'];
-    $fault_description = $_POST['fault_description'];
-    $work_description = $_POST['work_description'];
-
-    // Update the project in the database
-    $success = $projectClass->updateProject($project_id, $car_model, $reg_number, $fault_description, $work_description);
-
-    if ($success) {
-        echo "Project updated successfully!";
-        // Optionally, redirect or show a success message
-    } else {
-        echo "Failed to update the project!";
+if (isset($_POST['edit-project-submit'])) {
+    $feedbackMessages = $project->updateProject(
+		$projectId,
+		(int)$_POST['project-car'], 
+		(int)$_POST['project-customer'], 
+		$user->cleanInput($_POST['defect-desc']),
+		$user->cleanInput($_POST['work-desc'])
+	);
+	if($feedbackMessages === 1) {
+		header("Location: project.php?project_id=" . $projectId);
+		exit();
+	} else {
+		echo "<div class='container'>";
+		foreach($feedbackMessages as $message) {
+			echo "<div class='alert alert-danger text-center' role='alert'>";
+			echo 	$message;
+			echo "</div>";
+		}
+		echo "</div>";
     }
 }
 ?>
 
-			<div class="container">
-				<div class="mw-500 mx-auto">
-					<h1 class="my-5">Redigera Projekt</h1>
-					
-					<!-- Project details form -->
-					<form method="POST" action="project.php?project_id=<?php echo $project_id; ?>">
-						<h2 class="h4 my-3">Bil</h2>
+<div class="container">
 
-						<div class="row">
-						<div class="col">
-							<h3 class="h6">Märke+Modell</h3>
-							<input type="text" class="form-control" value="<?php echo $project['car_brand'] . ' ' . $project['car_model']; ?>" name="car_model" readonly />
-						</div>
-						<div class="col">
-							<h3 class="h6">Registernummer</h3>
-							<input type="text" class="form-control" value="<?php echo $project['car_license']; ?>" name="reg_number" readonly />
-						</div>
-					</div>
+	<div class="mw-500 mx-auto">
+		<h1 class="my-5">Redigera projekt</h1>
 
-					<h2 class="h4 my-3">Kund</h2>
-					<div class="row">
-						<div class="col">
-							<h3 class="h6">Namn</h3>
-							<input type="text" class="form-control" value="<?php echo $project['customer_fname'] . ' ' . $project['customer_lname']; ?>" name="customer_name" readonly />
-						</div>
-						<div class="col">
-							<h3 class="h6">Telefonnummer</h3>
-							<input type="text" class="form-control" value="<?php echo $project['customer_phone']; ?>" name="customer_phone" readonly />
-						</div>
-						<div class="col">
-							<h3 class="h6">Epost</h3>
-							<input type="email" class="form-control" value="<?php echo $project['customer_email']; ?>" name="customer_email" readonly />
-						</div>
-						<div class="col mb-3">
-							<h3 class="h6">Adress, Postnummer, Ort</h3>
-							<input type="text" class="form-control" value="<?php echo $project['customer_address'] . ', ' . $project['customer_zip'] . ' ' . $project['customer_area']; ?>" name="customer_address" readonly />
-						</div>
-					</div>
+		<form id="project-form" action="" method="post">
+			<h2 class="h4 mt-3">Bil *</h2>
 
-            <h2 class="h2 mt-3 mb-2">Om projektet</h2>
+			<button type="button" class="btn btn-primary my-3" data-bs-toggle="modal" data-bs-target="#carModal">
+				Bläddra bland bilar
+			</button>
 
-            <label class="h4 my-3">Felbeskrivning</label>
-            <textarea class="form-control" name="fault_description"><?php echo $project['defect_desc']; ?></textarea>
+			<input type="hidden" id="project-car" name="project-car" value="<?php echo $projectDataArray['car_id_fk'] ?>" required="required">
 
-            <label class="h4 my-3">Arbetsbeskrivning</label>
-            <textarea class="form-control" name="work_description"><?php echo $project['work_desc']; ?></textarea>
+			<div class="row">
+				<p class="h6" id="car-data">
+					<span id="car-brand"><?php echo $projectDataArray['car_brand'] ?></span> 
+					<span id="car-model"><?php echo $projectDataArray['car_model'] ?></span> 
+					<span class="ms-4" id="car-license"><?php echo $projectDataArray['car_license'] ?></span>
+				</p>
+			</div>
 
-            <input type="submit" class="btn btn-primary my-3" value="Redigera">
-        </form>
-    </div>
+
+			<h2 class="h4 mt-4">Kund *</h2>
+
+			<button type="button" class="btn btn-primary my-3" data-bs-toggle="modal" data-bs-target="#customerModal">
+				Bläddra bland kunder
+			</button>
+
+			<input type="hidden" id="project-customer" name="project-customer" value="<?php echo $projectDataArray['customer_id_fk'] ?>" required="required">
+
+			<div class="row">
+				<p class="h6" id="customer-data">
+					<?php echo "{$projectDataArray['customer_fname']} {$projectDataArray['customer_lname']}" ?>
+					<?php echo "<span class='ms-4'> {$projectDataArray['customer_phone']} </span>"?>
+					<?php echo "<span class='ms-4'> {$projectDataArray['customer_email']} </span>"?>
+					<?php echo "<span class='ms-4'> {$projectDataArray['customer_address']} {$projectDataArray['customer_zip']} {$projectDataArray['customer_area']} </span>"?>
+				</p>
+			</div>
+
+			<h2 class="h4 mt-4 mb-2">Om projektet</h2>
+
+			<label class="h5 my-3" for="defect-desc">Felbeskrivning *</label>
+			<textarea class="form-control" id="defect-desc" name="defect-desc" required="required"><?php echo $projectDataArray['defect_desc']; ?></textarea>
+			
+			<label class="h5 my-3" for="defect-desc">Arbetsbeskrivning</label>
+			<textarea class="form-control" id="work-desc" name="work-desc"><?php echo $projectDataArray['work_desc']; ?></textarea>
+
+			<input type="submit" class="btn btn-primary my-3" name="edit-project-submit" value="Spara ändringar">
+		</form>
+	</div>
 </div>
+
+
+<div class="modal fade" id="carModal" tabindex="-1" aria-labelledby="carModalLabel" aria-hidden="true">
+	<div class="modal-dialog modal-dialog-centered">
+		<div class="modal-content">
+			<div class="modal-header">
+				<h1 class="modal-title fs-5" id="carModalLabel">Välj bil</h1>
+				<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+			</div>
+			<div class="modal-body p-0">
+				<?php
+					$car->populateCarField($carsArray);
+				?>
+			</div>
+			<div class="modal-footer">
+				<button type="button" class="btn btn-secondary me-auto" data-bs-dismiss="modal">Tillbaka</button>
+				<a class="btn btn-primary" href="newcar.php" role="button">Ny bil</a>
+			</div>
+		</div>
+	</div>
+</div>
+
+<div class="modal fade" id="customerModal" tabindex="-1" aria-labelledby="customerModalLabel" aria-hidden="true">
+	<div class="modal-dialog modal-dialog-centered">
+		<div class="modal-content">
+			<div class="modal-header">
+				<h1 class="modal-title fs-5" id="customerModalLabel">Välj kund</h1>
+				<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+			</div>
+			<div class="modal-body p-0">
+				<?php
+					$customer->populateCustomerField($customersArray);
+				?>
+			</div>
+			<div class="modal-footer">
+				<button type="button" class="btn btn-secondary me-auto" data-bs-dismiss="modal">Tillbaka</button>
+				<a class="btn btn-primary" href="newcustomer.php" role="button">Ny kund</a>
+			</div>
+		</div>
+	</div>
+</div>
+
+<script>
+
+	function selectProjectCustomer(customerId) {
+		const selectedCustomer = document.getElementById("project-customer");
+		selectedCustomer.value = customerId;
+
+		if (customerId == undefined || customerId == null || customerId == "") {
+        	return;
+		} else {
+			var xmlhttp = new XMLHttpRequest();
+			xmlhttp.onreadystatechange = function() {
+				if (this.readyState == 4 && this.status == 200) {
+					document.getElementById("customer-data").innerHTML = this.responseText;
+				}
+        	};
+        xmlhttp.open("GET", "ajax/select_customer_from_modal.php?id=" + customerId, true);
+        xmlhttp.send();
+    	}
+	}
+
+	function selectProjectCar(carId) {
+		const selectedCar = document.getElementById("project-car");
+		selectedCar.value = carId;
+
+		if (carId == undefined || carId == null || carId == "") {
+        	return;
+		} else {
+			var xmlhttp = new XMLHttpRequest();
+			xmlhttp.onreadystatechange = function() {
+				if (this.readyState == 4 && this.status == 200) {
+					document.getElementById("car-data").innerHTML = this.responseText;
+				}
+        	};
+        xmlhttp.open("GET", "ajax/select_car_from_modal.php?id=" + carId, true);
+        xmlhttp.send();
+    	}
+	}
+</script>
 
 <?php
 include_once 'includes/footer.php';

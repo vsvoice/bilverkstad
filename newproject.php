@@ -1,9 +1,6 @@
 <?php
 include_once 'includes/header.php';
 
-if(isset($_SESSION['project-car'])) {unset($_SESSION['projectcar']); } 
-if(isset($_SESSION['project-customer'])) {unset($_SESSION['projectcustomer']); }
-
 $customersArray = $customer->selectAllCustomers();
 $carsArray = $car->selectAllCars();
 

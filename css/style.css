@@ -38,3 +38,7 @@ header {
 .card-title a:hover {
     text-decoration: none; /* Keep it unstyled on hover */
 }
+/*
+ul.list-group li:nth-child(even) { 
+    background: #f1f1f1; 
+}*/
