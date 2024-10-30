@@ -33,7 +33,7 @@ class User {
 
             // Check if query returns any result
             if($stmt_checkUsername->rowCount() > 0) {
-                array_push($this->errorMessages, "Username or email is already taken! ");
+                array_push($this->errorMessages, "Användarnamn eller e-postadress är upptagen! ");
                 $this->errorState = 1;
             }
         }
@@ -44,7 +44,7 @@ class User {
 
             // Check if query returns any result
             if($stmt_checkUserEmail->rowCount() > 0) {
-                array_push($this->errorMessages, "Email is already taken! ");
+                array_push($this->errorMessages, "E-postadressen är upptagen! ");
                 $this->errorState = 1;
             }
         }
@@ -52,12 +52,12 @@ class User {
 
         // START Check if user-entered passwords match each other, and are at least 8 characters long
         if($upass !== $upassrepeat) {
-            array_push($this->errorMessages, "Passwords do not match! ");
+            array_push($this->errorMessages, "Lösenorden matchar inte! ");
             $this->errorState = 1;
         }
         else {
             if (strlen($upass) < 8) {
-                array_push($this->errorMessages, "Password is too short! ");
+                array_push($this->errorMessages, "Lösenordet är för kort! ");
                 $this->errorState = 1;
             }
         }
@@ -65,7 +65,7 @@ class User {
 
         // START Check if user-entered email is a "real" address
         if(!filter_var($umail, FILTER_VALIDATE_EMAIL)) {
-            array_push($this->errorMessages, "Email not in correct format! ");
+            array_push($this->errorMessages, "E-postadressen är inte i rätt format! ");
             $this->errorState = 1;
         }
         // END Check if user-entered email is a "real" address
@@ -78,24 +78,27 @@ class User {
     }
 
 
-    public function register($uname, $umail, $upass) {
+    public function register($uname, $umail, $upass, $fname, $lname) {
         $hashedPassword = password_hash($upass, PASSWORD_DEFAULT);
         $uname = $this->cleanInput($uname);
+        $fname = $this->cleanInput($fname);
+        $lname = $this->cleanInput($lname);
 
         if(password_verify($upass, $hashedPassword)) {
-            $stmt_insertNewUser = $this->pdo->prepare('INSERT INTO table_users (u_name, u_password, u_email, u_role_fk, u_status) 
+            $stmt_insertNewUser = $this->pdo->prepare('INSERT INTO table_users (u_name, u_password, u_email, u_role_fk, u_status, u_fname, u_lname) 
             VALUES 
-            (:uname, :upass, :umail, 1, 1)');
+            (:uname, :upass, :umail, 1, 1, :fname, :lname)');
             $stmt_insertNewUser->bindParam(':uname', $uname, PDO::PARAM_STR);
             $stmt_insertNewUser->bindParam(':upass', $hashedPassword, PDO::PARAM_STR);
             $stmt_insertNewUser->bindParam(':umail', $umail, PDO::PARAM_STR);
+            $stmt_insertNewUser->bindParam(':fname', $fname, PDO::PARAM_STR);
+            $stmt_insertNewUser->bindParam(':lname', $lname, PDO::PARAM_STR);
         }
         
         if($stmt_insertNewUser->execute()) {
-            header("Location: index.php?newuser=1");
-            exit();
+            return 1;
         } else {
-            array_push($this->errorMessages, "Failed to sign up user! Please contact support!");
+            array_push($this->errorMessages, "Lyckades inte registrera användaren! Kontakta support!");
             return $this->errorMessages;
         }
 
@@ -231,6 +234,42 @@ class User {
             return "User deleted successfully";
         } else {
             return "Something went wrong... Please try again or contact support.";
+        }
+    }
+
+    public function getAllWorkingHours(string $fromDate, string $toDate) {
+        $stmt_selectWorkingHours = $this->pdo->prepare('SELECT 
+                u.u_id,
+                u.u_fname,
+                u.u_lname,
+                SUM(h.h_amount) AS total_hours
+            FROM 
+                table_hours h
+            JOIN 
+                table_users u ON h.u_id_fk = u.u_id
+            WHERE 
+                h.h_date BETWEEN :fromDate AND :toDate
+                AND u.u_status = 1
+                AND u.u_role_fk = 1
+            GROUP BY 
+                u.u_id, u.u_fname, u.u_lname;');
+        $stmt_selectWorkingHours->bindParam(':fromDate', $fromDate, PDO::PARAM_STR);
+        $stmt_selectWorkingHours->bindParam(':toDate', $toDate, PDO::PARAM_STR);
+        $stmt_selectWorkingHours->execute();
+        $workingHours = $stmt_selectWorkingHours->fetchAll();
+        return $workingHours;
+    }
+
+    public function populateWorkingHoursField($hoursArray) {
+        foreach ($hoursArray as $user) {
+            echo "<div class='row list-group-item d-flex py-3'>
+                    <div class='col'>
+                        {$user['u_fname']} {$user['u_lname']}
+                    </div>
+                    <div class='col'>
+                        {$user['total_hours']}
+                    </div>
+                </div>";
         }
     }
 

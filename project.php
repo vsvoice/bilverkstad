@@ -141,7 +141,7 @@ if (isset($_POST['work-hours-submit'])) {
 					echo "<ul class='list-group'>";
 
 					foreach ($projectProductsArray as $product) {
-						echo "<button class='list-group-item d-flex align-items-center rounded my-1 border shadow-sm' data-bs-toggle='modal' data-bs-target='#editProductModal' value='" . $product['product_id'] . "' onclick='selectProductData(this.value)'>"
+						echo "<button class='list-group-item list-group-item-action d-flex align-items-center rounded my-1 border shadow-sm' data-bs-toggle='modal' data-bs-target='#editProductModal' value='" . $product['product_id'] . "' onclick='selectProductData(this.value)'>"
 							. $product['name'] 
 							. " <span class='ms-3'>" 
 							. number_format($product['price'], 2, ',', ' ') 

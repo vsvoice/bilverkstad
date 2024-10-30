@@ -14,42 +14,46 @@ if (isset($_POST['search-users-submit']) && !empty($_POST['search'])) {
 ?>
 
 <div class="container">
+    <div class="mw-500 mx-auto">
 
-<h1>Find Users</h1>
+        <h1 class="my-5">Administratör</h1>
 
-<form action="" method="post">
-    <label for="search">Enter Username or Email</label><br>
-    <input class="mb-2" type="text" name="search" id="search" required="required"><br>
+        <a class="btn btn-primary mb-2" href="newuser.php">Skapa ny användare</a>
 
-    <input type="submit" name="search-users-submit" value="Search">
-</form>
+        <form action="" method="post" class="mt-3">
+            <label for="search" class="form-label">Sök användare (användarnamn eller e-post)</label><br>
+            <input class="form-control" type="text" name="search" id="search" required="required"><br>
 
-    <?php
-    if(isset($usersArray) && !empty($usersArray)) {
-        echo "
-        <table class='table table-striped'>
-            <thead>
-                <tr>
-                <th scope='col'>Username</th>
-                <th scope='col'>Email</th>
-                <th scope='col'></th>
-                </tr>
-            </thead>
-            <tbody>";
-        foreach ($usersArray as $user) {
+            <input type="submit" name="search-users-submit" class="btn btn-primary" value="Sök">
+        </form>
+
+        <?php
+        if(isset($usersArray) && !empty($usersArray)) {
             echo "
-            <tr>
-                <td>{$user['u_name']}</td>
-                <td>{$user['u_email']}</td>
-                <td><a class='btn btn-primary' href='admin-account.php?uid={$user['u_id']}'>Edit User</a><br></td>
-            </tr>";
+            <table class='table table-striped'>
+                <thead>
+                    <tr>
+                    <th scope='col'>Username</th>
+                    <th scope='col'>Email</th>
+                    <th scope='col'></th>
+                    </tr>
+                </thead>
+                <tbody>";
+            foreach ($usersArray as $user) {
+                echo "
+                <tr>
+                    <td>{$user['u_name']}</td>
+                    <td>{$user['u_email']}</td>
+                    <td><a class='btn btn-primary' href='admin-account.php?uid={$user['u_id']}'>Edit User</a><br></td>
+                </tr>";
+            }
+            echo "  
+                </tbody>
+            </table>";
         }
-        echo "  
-            </tbody>
-        </table>";
-    }
-    ?>
+        ?>
 
+    </div>
 </div>
 
 <?php
