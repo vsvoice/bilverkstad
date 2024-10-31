@@ -22,60 +22,67 @@ class User {
         return $data;
     }
 
-    public function checkUserRegisterInput($uname, $umail, $upass, $upassrepeat) {
+    public function checkUserRegisterInput($uname, $umail, $upass, $upassrepeat, $uid = null) {
         // START Check if user-entered username or email exists in the database
-        if(isset($_POST['register-submit'])) {
+        if (isset($_POST['register-submit'])) {
             $this->errorState = 0;
             $stmt_checkUsername = $this->pdo->prepare('SELECT * FROM table_users WHERE u_name = :uname OR u_email = :email');
             $stmt_checkUsername->bindParam(':uname', $uname, PDO::PARAM_STR);
             $stmt_checkUsername->bindParam(':email', $umail, PDO::PARAM_STR);
             $stmt_checkUsername->execute();
-
+    
             // Check if query returns any result
-            if($stmt_checkUsername->rowCount() > 0) {
-                array_push($this->errorMessages, "Användarnamn eller e-postadress är upptagen! ");
+            if ($stmt_checkUsername->rowCount() > 0) {
+                array_push($this->errorMessages, "Användarnamn eller e-postadress är upptagen!");
                 $this->errorState = 1;
             }
-        }
-        else {
-            $stmt_checkUserEmail = $this->pdo->prepare('SELECT * FROM table_users WHERE u_email = :email');
-            $stmt_checkUserEmail->bindParam(':email', $umail, PDO::PARAM_STR);
-            $stmt_checkUserEmail->execute();
-
+        } else {
+            // Only check for email if user ID is not provided or the email has changed
+            if ($uid !== null) {
+                $stmt_checkUserEmail = $this->pdo->prepare('SELECT * FROM table_users WHERE u_email = :email AND u_id != :uid');
+                $stmt_checkUserEmail->bindParam(':email', $umail, PDO::PARAM_STR);
+                $stmt_checkUserEmail->bindParam(':uid', $uid, PDO::PARAM_INT);
+                $stmt_checkUserEmail->execute();
+            } else {
+                $stmt_checkUserEmail = $this->pdo->prepare('SELECT * FROM table_users WHERE u_email = :email');
+                $stmt_checkUserEmail->bindParam(':email', $umail, PDO::PARAM_STR);
+                $stmt_checkUserEmail->execute();
+            }
+    
             // Check if query returns any result
-            if($stmt_checkUserEmail->rowCount() > 0) {
-                array_push($this->errorMessages, "E-postadressen är upptagen! ");
+            if ($stmt_checkUserEmail->rowCount() > 0) {
+                array_push($this->errorMessages, "E-postadressen är upptagen!");
                 $this->errorState = 1;
             }
         }
         // END Check if user-entered username or email exists in the database
-
+    
         // START Check if user-entered passwords match each other, and are at least 8 characters long
-        if($upass !== $upassrepeat) {
-            array_push($this->errorMessages, "Lösenorden matchar inte! ");
+        if ($upass !== $upassrepeat) {
+            array_push($this->errorMessages, "Lösenorden matchar inte!");
             $this->errorState = 1;
-        }
-        else {
+        } else {
             if (strlen($upass) < 8) {
-                array_push($this->errorMessages, "Lösenordet är för kort! ");
+                array_push($this->errorMessages, "Lösenordet är för kort!");
                 $this->errorState = 1;
             }
         }
         // END Check if user-entered passwords match each other, and are at least 8 characters long
-
+    
         // START Check if user-entered email is a "real" address
-        if(!filter_var($umail, FILTER_VALIDATE_EMAIL)) {
-            array_push($this->errorMessages, "E-postadressen är inte i rätt format! ");
+        if (!filter_var($umail, FILTER_VALIDATE_EMAIL)) {
+            array_push($this->errorMessages, "E-postadressen är inte i rätt format!");
             $this->errorState = 1;
         }
         // END Check if user-entered email is a "real" address
-
+    
         if ($this->errorState == 1) {
             return $this->errorMessages;
         } else {
             return 1;    
         }
     }
+    
 
 
     public function register($uname, $umail, $upass, $fname, $lname) {
@@ -169,37 +176,65 @@ class User {
 
     }
 
-    public function editUserInfo($umail, $upassold, $upassnew, $uid, $role, $status) {
-        
-        // Get password of current user
-        $stmt_getUserPassword = $this->pdo->prepare('SELECT u_password FROM table_users WHERE u_id = :uid');
-        $stmt_getUserPassword->bindParam(':uid', $uid, PDO::PARAM_INT);
-        $stmt_getUserPassword->execute();
-        $oldPassword = $stmt_getUserPassword->fetch();
-        
-        if(isset($_POST['edit-user-submit'])) {
+    public function editUserInfo($umail, $upassold, $upassnew, $uid, $role, $ufname, $ulname, $status) {
+        // Clean and validate first name
+        $cleanedFname = $this->cleanInput($ufname);
+        if (empty($cleanedFname) || !preg_match("/^[a-zA-Z\s]+$/", $cleanedFname)) {
+            return "Förnamn får inte vara tomt och får endast innehålla bokstäver!";
+        }
+    
+        // Clean and validate last name
+        $cleanedLname = $this->cleanInput($ulname);
+        if (empty($cleanedLname) || !preg_match("/^[a-zA-Z\s]+$/", $cleanedLname)) {
+            return "Efternamn får inte vara tomt och får endast innehålla bokstäver!";
+        }
+    
+        // Get password and current email of the user
+        $stmt_getUserDetails = $this->pdo->prepare('SELECT u_password, u_email FROM table_users WHERE u_id = :uid');
+        $stmt_getUserDetails->bindParam(':uid', $uid, PDO::PARAM_INT);
+        $stmt_getUserDetails->execute();
+        $userDetails = $stmt_getUserDetails->fetch();
+    
+        if (isset($_POST['edit-user-submit'])) {
             // Check if entered password is correct
-            if(!password_verify($upassold, $oldPassword['u_password'])) {
+            if (!password_verify($upassold, $userDetails['u_password'])) {
                 return "The password is invalid";
             }
         }
-        
+    
+        // Update fields
         $hashedPassword = password_hash($upassnew, PASSWORD_DEFAULT);
+        
+        // Only set u_email if it has changed
+        $updateEmail = $umail !== $userDetails['u_email'] ? ", u_email = :umail" : "";
+    
         // Update in the database 
-        $stmt_editUserInfo = $this->pdo->prepare('
-        UPDATE table_users
-        SET u_email = :umail, u_password = :upassnew, u_role_fk = :role, u_status = :status
-        WHERE u_id = :uid');
-        $stmt_editUserInfo->bindParam(':umail', $umail, PDO::PARAM_STR);
+        $stmt_editUserInfo = $this->pdo->prepare("
+            UPDATE table_users
+            SET u_password = :upassnew, u_role_fk = :role, u_status = :status, u_fname = :ufname, u_lname = :ulname 
+            $updateEmail
+            WHERE u_id = :uid
+        ");
+        
+        // Bind parameters
+        if ($updateEmail) {
+            $stmt_editUserInfo->bindParam(':umail', $umail, PDO::PARAM_STR);
+        }
+        
         $stmt_editUserInfo->bindParam(':upassnew', $hashedPassword, PDO::PARAM_STR);
         $stmt_editUserInfo->bindParam(':role', $role, PDO::PARAM_INT);
         $stmt_editUserInfo->bindParam(':status', $status, PDO::PARAM_INT);
+        $stmt_editUserInfo->bindParam(':ufname', $cleanedFname, PDO::PARAM_STR); // Use cleaned name
+        $stmt_editUserInfo->bindParam(':ulname', $cleanedLname, PDO::PARAM_STR); // Use cleaned name
         $stmt_editUserInfo->bindParam(':uid', $uid, PDO::PARAM_INT);
         
-        if($stmt_editUserInfo->execute() && $uid == $_SESSION['user_id']) {
-            $_SESSION['user_email'] = $umail;
-        };
+        // Execute the statement
+        if ($stmt_editUserInfo->execute() && $uid == $_SESSION['user_id']) {
+            $_SESSION['user_email'] = $umail; // Update session email if changed
+        }
     }
+    
+    
 
     public function searchUsers($input) {
         // Replace all whitespace characters with % wildcards
