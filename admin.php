@@ -20,10 +20,10 @@ if (isset($_POST['search-users-submit']) && !empty($_POST['search'])) {
 
         <a class="btn btn-primary mb-2" href="newuser.php">Skapa ny användare</a>
 
-        <form action="" method="post" class="mt-3">
+        <div class="mt-3">
             <label for="search" class="form-label">Sök användare (användarnamn eller e-post)</label><br>
             <input class="form-control" type="text" name="search" id="search" onkeyup="searchUsers(this.value)"><br>
-        </form>
+        </div>
 
         <table class='table table-striped'>
             <thead>

@@ -61,6 +61,35 @@ class Customer {
         echo "</div>";
     }
 
+    public function searchCustomers($input) {
+        $inputJoker = "%".$input."%";
+        $stmt_searchCustomers = $this->pdo->prepare('SELECT * FROM table_customers WHERE customer_fname LIKE :fname OR customer_lname LIKE :lname OR customer_phone LIKE :phone OR customer_email LIKE :email OR customer_address LIKE :address OR customer_zip LIKE :zip OR customer_area LIKE :area');
+        $stmt_searchCustomers->bindParam(':fname', $inputJoker, PDO::PARAM_STR);
+        $stmt_searchCustomers->bindParam(':lname', $inputJoker, PDO::PARAM_STR);
+        $stmt_searchCustomers->bindParam(':phone', $inputJoker, PDO::PARAM_STR);
+        $stmt_searchCustomers->bindParam(':email', $inputJoker, PDO::PARAM_STR);
+        $stmt_searchCustomers->bindParam(':address', $inputJoker, PDO::PARAM_STR);
+        $stmt_searchCustomers->bindParam(':zip', $inputJoker, PDO::PARAM_STR);
+        $stmt_searchCustomers->bindParam(':area', $inputJoker, PDO::PARAM_STR);
+        $stmt_searchCustomers->execute();
+        $customersList = $stmt_searchCustomers->fetchAll();
+        
+        return $customersList;
+    }
+
+    public function populateCustomerSearchField($customersArray) {
+        foreach ($customersArray as $customer) {
+            echo "
+            <tr>
+                <td>{$customer['customer_fname']} {$customer['customer_lname']}</td>
+                <td>{$customer['customer_phone']}</td>
+                <td>{$customer['customer_email']}</td>
+                <td>{$customer['customer_address']} {$customer['customer_zip']} {$customer['customer_area']}</td>
+                <td><a class='btn btn-primary'>Visa projekt</a><br></td>
+            </tr>";
+        }
+    }
+
 }
 
 ?>

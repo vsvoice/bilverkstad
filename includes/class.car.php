@@ -61,6 +61,30 @@ class Car {
         
         echo "<span id='car-brand'>{$carData['car_brand']}</span> <span id='car-model'>{$carData['car_model']}</span> <span class='ms-4' id='car-license'>{$carData['car_license']}</span>";
     }
+
+    public function searchCars($input) {
+        $inputJoker = "%".$input."%";
+        $stmt_searchCars = $this->pdo->prepare('SELECT * FROM table_cars WHERE car_brand LIKE :brand OR car_model LIKE :model OR car_license LIKE :license');
+        $stmt_searchCars->bindParam(':brand', $inputJoker, PDO::PARAM_STR);
+        $stmt_searchCars->bindParam(':model', $inputJoker, PDO::PARAM_STR);
+        $stmt_searchCars->bindParam(':license', $inputJoker, PDO::PARAM_STR);
+        $stmt_searchCars->execute();
+        $carsList = $stmt_searchCars->fetchAll();
+        
+        return $carsList;
+    }
+
+    public function populateCarSearchField($carsArray) {
+        foreach ($carsArray as $car) {
+            echo "
+            <tr>
+                <td>{$car['car_brand']}</td>
+                <td>{$car['car_model']}</td>
+                <td>{$car['car_license']}</td>
+                <td><a class='btn btn-primary'>Visa projekt</a><br></td>
+            </tr>";
+        }
+    }
 }
 
 ?>
