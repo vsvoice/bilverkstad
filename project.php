@@ -23,12 +23,7 @@ $currentDate = date("Y-m-d");
 $projectProductsArray = $project->selectProjectProducts($projectId);
 $todaysWorkingHours = $project->selectWorkingHours($currentDate, $_SESSION['user_id'], $projectId);
 $totalWorkingHours = $project->selectTotalWorkingHours($_SESSION['user_id'], $projectId);
-//var_dump($currentDate);
-//var_dump($projectId);
-//var_dump($_SESSION['user_id']);
-var_dump($todaysWorkingHours);
-//var_dump($projectDataArray);
-//var_dump($projectProductsArray);
+
 
 if (isset($_POST['new-product-submit'])) {
     $feedbackMessages = $project->insertNewProduct(

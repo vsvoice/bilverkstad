@@ -43,7 +43,7 @@ $adminMenuLinks = array(
 <!DOCTYPE html>
 <html>
 <head>
-	<title>OOP & PDO Login System</title>
+	<title>Powerol</title>
 	<link rel="stylesheet" href="css/style.css">
 	<!--<script defer src="js/script.js"></script>-->
 	<meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -57,7 +57,7 @@ $adminMenuLinks = array(
 <header class="container-fluid bg-dark mb-5 px-0">
 	<nav class="navbar navbar-expand-lg bg-body-tertiary navbar-dark bg-dark px-2 ps-lg-4" data-bs-theme="dark">
 	<div class="container-fluid px-2 px-sm-4">
-		<a class="navbar-brand" href="home.php">OOP & PDO Login System</a>
+		<a class="navbar-brand" href="home.php">Powerol</a>
 		<button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
 		<span class="navbar-toggler-icon"></span>
 		</button>
