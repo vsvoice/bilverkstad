@@ -10,70 +10,101 @@ if ($user->checkLoginStatus()) {
 $userInfoArray = $user->getUserInfo($_GET['uid']);
 $roleArray = $pdo->query("SELECT * FROM table_roles")->fetchAll();
 
-if(isset($_POST['admin-edit-user-submit'])) {
+if (isset($_POST['admin-edit-user-submit'])) {
+    $uStatus = isset($_POST['is-disabled']) ? 0 : 1;
+    $feedback = $user->checkUserRegisterInput(
+        $_POST['uname'], 
+        $_POST['umail'], 
+        $_POST['upassnew'], 
+        $_POST['upassrepeat'], 
+        $_GET['uid'] // Pass the user ID here
+    );
 
-    if(isset($_POST['is-disabled'])) {
-        $uStatus=0;
-    }
-    else {
-        $uStatus=1;
-    }
-	$feedback = $user->checkUserRegisterInput($_POST['uname'], $_POST['umail'], $_POST['upassnew'], $_POST['upassrepeat']);
-
-    if($feedback === 1) {
-        $editFeedback = $user->editUserInfo($_POST['umail'], $_POST['upassold'], $_POST['upassnew'], $_GET['uid'], $_POST['urole'], $uStatus);
+    if ($feedback === 1) {
+        $editFeedback = $user->editUserInfo(
+            $_POST['umail'], 
+            $_POST['upassold'], 
+            $_POST['upassnew'], 
+            $_GET['uid'], 
+            $_POST['urole'], 
+            $_POST['ufname'], 
+            $_POST['ulname'], 
+            $uStatus
+        );
     } else {
-		foreach($feedback as $message) {
-			echo $message;
-		}
+        foreach ($feedback as $message) {
+            echo $message;
+        }
     }
 }
+
 ?>
 
-<div class="container">
+<div class="container d-flex align-items-center justify-content-center min-vh-100">
+    <div class="col-md-6">
+        <h1 class="text-center mb-4">Admin - Edit User</h1>
 
-<h1>Admin - Edit User</h1>
+        <form action="" method="post" class="bg-light p-4 rounded shadow-sm">
 
-<form action="" method="post">
+            <div class="mb-3">
+                <label for="ufname" class="form-label">Förnamn</label>
+                <input type="text" class="form-control" name="ufname" id="ufname" value="<?php echo $userInfoArray['u_fname'] ?>">
+            </div>
+        
+            <div class="mb-3">
+                <label for="ulname" class="form-label">Efternamn</label>
+                <input type="text" class="form-control" name="ulname" id="ulname" value="<?php echo $userInfoArray['u_lname'] ?>" >
+            </div>    
 
-    <label for="uname">Username</label><br>
-    <input class="mb-2" type="text" name="uname" id="uname" value="<?php echo $userInfoArray['u_name'] ?>" required="required" readonly><br>
+            <div class="mb-3">
+                <label for="uname" class="form-label">Username</label>
+                <input type="text" class="form-control" name="uname" id="uname" value="<?php echo $userInfoArray['u_name'] ?>" readonly required>
+            </div>
 
-    <label for="umail">Email</label><br>
-    <input class="mb-2" type="email" name="umail" id="umail" value="<?php echo $userInfoArray['u_email'] ?>" required="required"><br>
+            <div class="mb-3">
+                <label for="umail" class="form-label">Email</label>
+                <input type="email" class="form-control" name="umail" id="umail" value="<?php echo $userInfoArray['u_email'] ?>" required>
+            </div>
 
-    <input class="mb-2" type="hidden" name="upassold" id="upassold" required="required" value="asdfs123" readonly>
+            <input type="hidden" name="upassold" id="upassold" value="asdfs123" readonly required>
 
-    <label for="upassnew">New Password</label><br>
-    <input class="mb-2" type="password" name="upassnew" id="upassnew" required="required"><br>
+            <div class="mb-3">
+                <label for="upassnew" class="form-label">New Password</label>
+                <input type="password" class="form-control" name="upassnew" id="upassnew" required>
+            </div>
 
-    <label for="upassrepeat">Repeat Password</label><br>
-    <input class="mb-2" type="password" name="upassrepeat" id="upassrepeat" required="required"><br>
+            <div class="mb-3">
+                <label for="upassrepeat" class="form-label">Repeat Password</label>
+                <input type="password" class="form-control" name="upassrepeat" id="upassrepeat" required>
+            </div>
 
-    <label for="role">User Role</label><br>
-    <select class="mb-3" name="urole" id="role">
-    <?php
-        foreach ($roleArray as $role) {
-            if($role['r_id'] === $userInfoArray['u_role_fk']) {
-                $selected = " selected";
-            } else {
-                $selected = " ";
-            }
-            echo "<option{$selected} value='{$role['r_id']}'>{$role['r_name']}</option>";
-        }
-    ?>
-    </select><br>
+            <div class="mb-3">
+                <label for="role" class="form-label">User Role</label>
+                <select class="form-select" name="urole" id="role">
+                    <?php
+                        foreach ($roleArray as $role) {
+                            $selected = $role['r_id'] === $userInfoArray['u_role_fk'] ? "selected" : "";
+                            echo "<option {$selected} value='{$role['r_id']}'>{$role['r_name']}</option>";
+                        }
+                    ?>
+                </select>
+            </div>
 
-    <input type="checkbox" id="is-disabled" name="is-disabled" value="1" <?php if($userInfoArray['u_status'] === 0){echo "checked";} ?> >
-    <label class="mb-3" for="is-disabled">Disable Account</label><br>
+            <div class="form-check mb-3">
+                <input type="checkbox" class="form-check-input" id="is-disabled" name="is-disabled" value="1" <?php if($userInfoArray['u_status'] === 0){echo "checked";} ?>>
+                <label class="form-check-label" for="is-disabled">Disable Account</label>
+            </div>
 
+            <div class="d-grid">
+                <input type="submit" class="btn btn-primary" name="admin-edit-user-submit" value="Update">
+            </div>
+            
+        </form>
 
-    <input type="submit" name="admin-edit-user-submit" value="Update">
-    
-</form>
-
-<a class="btn btn-danger mt-5" href="confirm-delete.php?uid=<?php echo $_GET['uid']; ?>">Delete This User</a>
-
+        <div class="text-center mt-4">
+            <a class="btn btn-danger" href="confirm-delete.php?uid=<?php echo $_GET['uid']; ?>">Delete This User</a>
+        </div>
+    </div>
 </div>
 
 <?php
