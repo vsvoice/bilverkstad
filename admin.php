@@ -22,39 +22,44 @@ if (isset($_POST['search-users-submit']) && !empty($_POST['search'])) {
 
         <form action="" method="post" class="mt-3">
             <label for="search" class="form-label">Sök användare (användarnamn eller e-post)</label><br>
-            <input class="form-control" type="text" name="search" id="search" required="required"><br>
-
-            <input type="submit" name="search-users-submit" class="btn btn-primary" value="Sök">
+            <input class="form-control" type="text" name="search" id="search" onkeyup="searchUsers(this.value)"><br>
         </form>
 
-        <?php
-        if(isset($usersArray) && !empty($usersArray)) {
-            echo "
-            <table class='table table-striped'>
-                <thead>
-                    <tr>
-                    <th scope='col'>Username</th>
-                    <th scope='col'>Email</th>
-                    <th scope='col'></th>
-                    </tr>
-                </thead>
-                <tbody>";
-            foreach ($usersArray as $user) {
-                echo "
+        <table class='table table-striped'>
+            <thead>
                 <tr>
-                    <td>{$user['u_name']}</td>
-                    <td>{$user['u_email']}</td>
-                    <td><a class='btn btn-primary' href='admin-account.php?uid={$user['u_id']}'>Edit User</a><br></td>
-                </tr>";
-            }
-            echo "  
-                </tbody>
-            </table>";
-        }
-        ?>
-
+                <th scope='col'>Användarnamn</th>
+                <th scope='col'>E-post</th>
+                <th scope='col'></th>
+                </tr>
+            </thead>
+            <tbody id="user-field">
+            </tbody>
+        </table>
+        
     </div>
 </div>
+
+<script>
+    document.addEventListener("DOMContentLoaded", function() {
+        // Code to run when the DOM is ready
+        searchUsers(" ");
+    });
+
+    function searchUsers(str) {
+    if (str.length == 0) {
+        str = " ";
+    }
+    var xmlhttp = new XMLHttpRequest();
+    xmlhttp.onreadystatechange = function() {
+    if (this.readyState == 4 && this.status == 200) {
+        document.getElementById("user-field").innerHTML = this.responseText;
+    }
+    };
+    xmlhttp.open("GET", "ajax/search_users.php?q=" + str, true);
+    xmlhttp.send();
+    }
+</script>
 
 <?php
 include_once 'includes/footer.php';

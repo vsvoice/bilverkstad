@@ -202,14 +202,31 @@ class User {
     }
 
     public function searchUsers($input) {
+        // Replace all whitespace characters with % wildcards
+        $input = preg_replace('/\s+/', '%', $input);
+
         $inputJoker = "%".$input."%";
-        $stmt_searchUsers = $this->pdo->prepare('SELECT * FROM table_users WHERE u_name LIKE :uname OR u_email LIKE :email');
+        $stmt_searchUsers = $this->pdo->prepare('SELECT * FROM table_users WHERE u_name LIKE :uname OR u_email LIKE :email OR u_fname LIKE :fname OR u_lname LIKE :lname OR CONCAT(u_fname, u_lname) LIKE :fullname');
         $stmt_searchUsers->bindParam(':uname', $inputJoker, PDO::PARAM_STR);
         $stmt_searchUsers->bindParam(':email', $inputJoker, PDO::PARAM_STR);
+        $stmt_searchUsers->bindParam(':fname', $inputJoker, PDO::PARAM_STR);
+        $stmt_searchUsers->bindParam(':lname', $inputJoker, PDO::PARAM_STR);
+        $stmt_searchUsers->bindParam(':fullname', $inputJoker, PDO::PARAM_STR);
         $stmt_searchUsers->execute();
         $usersList = $stmt_searchUsers->fetchAll();
         
         return $usersList;
+    }
+
+    public function populateUserField($usersArray) {
+        foreach ($usersArray as $user) {
+            echo "
+            <tr>
+                <td>{$user['u_name']}</td>
+                <td>{$user['u_email']}</td>
+                <td><a class='btn btn-primary' href='admin-account.php?uid={$user['u_id']}'>Redigera</a><br></td>
+            </tr>";
+        }
     }
 
     public function getUserInfo($uid) {
