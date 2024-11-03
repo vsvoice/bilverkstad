@@ -63,10 +63,15 @@ class Car {
     }
 
     public function searchCars($input) {
+        // Replace all whitespace characters with % wildcards
+        $input = preg_replace('/\s+/', '%', $input);
+
         $inputJoker = "%".$input."%";
-        $stmt_searchCars = $this->pdo->prepare('SELECT * FROM table_cars WHERE car_brand LIKE :brand OR car_model LIKE :model OR car_license LIKE :license');
+        
+        $stmt_searchCars = $this->pdo->prepare('SELECT * FROM table_cars WHERE car_brand LIKE :brand OR car_model LIKE :model OR car_license LIKE :license OR CONCAT(car_brand, car_model, car_license) LIKE :fullcar');
         $stmt_searchCars->bindParam(':brand', $inputJoker, PDO::PARAM_STR);
         $stmt_searchCars->bindParam(':model', $inputJoker, PDO::PARAM_STR);
+        $stmt_searchCars->bindParam(':fullcar', $inputJoker, PDO::PARAM_STR);
         $stmt_searchCars->bindParam(':license', $inputJoker, PDO::PARAM_STR);
         $stmt_searchCars->execute();
         $carsList = $stmt_searchCars->fetchAll();
@@ -77,12 +82,42 @@ class Car {
     public function populateCarSearchField($carsArray) {
         foreach ($carsArray as $car) {
             echo "
-            <tr>
+            <tr data-bs-toggle='modal' data-bs-target='#carModal' data-id='{$car['car_id']}' onclick=\"selectCarProjects(this.getAttribute('data-id'))\">
                 <td>{$car['car_brand']}</td>
                 <td>{$car['car_model']}</td>
                 <td>{$car['car_license']}</td>
-                <td><a class='btn btn-primary'>Visa projekt</a><br></td>
             </tr>";
+        }
+    }
+
+    public function selectCarProjects($carId) {
+        $stmt_selectCarProjects = $this->pdo->prepare('SELECT *,
+                c.*,
+                s.s_name
+            FROM 
+                table_projects p
+            JOIN 
+                table_customers c ON p.customer_id_fk = c.customer_id
+            JOIN 
+                table_statuses s ON p.status_id_fk = s.s_id
+            WHERE 
+                p.car_id_fk = :cid');
+        $stmt_selectCarProjects->bindParam(':cid', $carId, PDO::PARAM_INT);
+        $stmt_selectCarProjects->execute();
+        $carProjects = $stmt_selectCarProjects->fetchAll();
+        return $carProjects;
+    }
+
+    public function populateCarProjectsField($carProjectsArray) {
+        if (empty($carProjectsArray)){
+             echo "<tr class='text-center fst-italic'><td colspan='2'>Inga projekt hittades för denna bil ...</td></tr>";
+        }
+        foreach ($carProjectsArray as $project) {
+            echo "
+                <tr onclick=\"window.location.href='project.php?project_id={$project['project_id']}';\" style=\"cursor: pointer;\">
+                    <td>{$project['customer_fname']} {$project['customer_lname']}</td>
+                    <td>{$project['s_name']}</td>
+                </tr>";
         }
     }
 }

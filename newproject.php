@@ -115,6 +115,7 @@ if (isset($_POST['new-project-submit'])) {
 
 
 <script>
+	// Check if both car and customer are selected when submitted
 	document.getElementById("project-form").addEventListener("submit", function(event) {
 		const projectCar = document.getElementById("project-car").value;
 		const projectCustomer = document.getElementById("project-customer").value;

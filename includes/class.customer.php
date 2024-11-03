@@ -61,16 +61,22 @@ class Customer {
         echo "</div>";
     }
 
-    public function searchCustomers($input) {
+    public function searchCustomers(string $input) {
+        // Replace all whitespace characters with % wildcards
+        $input = preg_replace('/\s+/', '%', $input);
+
         $inputJoker = "%".$input."%";
-        $stmt_searchCustomers = $this->pdo->prepare('SELECT * FROM table_customers WHERE customer_fname LIKE :fname OR customer_lname LIKE :lname OR customer_phone LIKE :phone OR customer_email LIKE :email OR customer_address LIKE :address OR customer_zip LIKE :zip OR customer_area LIKE :area');
+        
+        $stmt_searchCustomers = $this->pdo->prepare('SELECT * FROM table_customers WHERE customer_fname LIKE :fname OR customer_lname LIKE :lname OR CONCAT(customer_fname, customer_lname) LIKE :fullname OR customer_phone LIKE :phone OR customer_email LIKE :email OR customer_address LIKE :address OR customer_zip LIKE :zip OR customer_area LIKE :area OR CONCAT(customer_address, customer_zip, customer_area) LIKE :fulladdress');
         $stmt_searchCustomers->bindParam(':fname', $inputJoker, PDO::PARAM_STR);
         $stmt_searchCustomers->bindParam(':lname', $inputJoker, PDO::PARAM_STR);
+        $stmt_searchCustomers->bindParam(':fullname', $inputJoker, PDO::PARAM_STR);
         $stmt_searchCustomers->bindParam(':phone', $inputJoker, PDO::PARAM_STR);
         $stmt_searchCustomers->bindParam(':email', $inputJoker, PDO::PARAM_STR);
         $stmt_searchCustomers->bindParam(':address', $inputJoker, PDO::PARAM_STR);
         $stmt_searchCustomers->bindParam(':zip', $inputJoker, PDO::PARAM_STR);
         $stmt_searchCustomers->bindParam(':area', $inputJoker, PDO::PARAM_STR);
+        $stmt_searchCustomers->bindParam(':fulladdress', $inputJoker, PDO::PARAM_STR);
         $stmt_searchCustomers->execute();
         $customersList = $stmt_searchCustomers->fetchAll();
         
@@ -80,13 +86,43 @@ class Customer {
     public function populateCustomerSearchField($customersArray) {
         foreach ($customersArray as $customer) {
             echo "
-            <tr>
+            <tr data-bs-toggle='modal' data-bs-target='#customerModal' data-id='{$customer['customer_id']}' onclick=\"selectCustomerProjects(this.getAttribute('data-id'))\">
                 <td>{$customer['customer_fname']} {$customer['customer_lname']}</td>
                 <td>{$customer['customer_phone']}</td>
                 <td>{$customer['customer_email']}</td>
                 <td>{$customer['customer_address']} {$customer['customer_zip']} {$customer['customer_area']}</td>
-                <td><a class='btn btn-primary'>Visa projekt</a><br></td>
             </tr>";
+        }
+    }
+
+    public function selectCustomerProjects($customerId) {
+        $stmt_selectCustomerProjects = $this->pdo->prepare('SELECT *,
+                c.*,
+                s.s_name
+            FROM 
+                table_projects p
+            JOIN 
+                table_cars c ON p.car_id_fk = c.car_id
+            JOIN 
+                table_statuses s ON p.status_id_fk = s.s_id
+            WHERE 
+                p.customer_id_fk = :cid');
+        $stmt_selectCustomerProjects->bindParam(':cid', $customerId, PDO::PARAM_INT);
+        $stmt_selectCustomerProjects->execute();
+        $customerProjects = $stmt_selectCustomerProjects->fetchAll();
+        return $customerProjects;
+    }
+
+    public function populateCustomerProjectsField($customerProjectsArray) {
+        if (empty($customerProjectsArray)){
+             echo "<tr class='text-center fst-italic'><td colspan='2'>Inga projekt hittades för denna kund ...</td></tr>";
+        }
+        foreach ($customerProjectsArray as $project) {
+            echo "
+                <tr onclick=\"window.location.href='project.php?project_id={$project['project_id']}';\" style=\"cursor: pointer;\">
+                    <td><span class='me-3'>{$project['car_brand']} {$project['car_model']}</span> {$project['car_license']}</td>
+                    <td>{$project['s_name']}</td>
+                </tr>";
         }
     }
 

@@ -31,9 +31,28 @@ if (isset($_POST['admin-edit-user-submit'])) {
             $_POST['ulname'], 
             $uStatus
         );
+        if ($editFeedback === 1) {
+            echo "<div class='container'>
+					<div class='alert alert-success text-center' role='alert'>
+						Användarens uppgifter har uppdaterats
+					</div>
+				</div>";
+        } else {
+            foreach ($editFeedback as $message) {
+                echo "<div class='container'>
+                        <div class='alert alert-danger text-center' role='alert'>
+                            {$message}
+                        </div>
+                    </div>";
+            }
+        }
     } else {
         foreach ($feedback as $message) {
-            echo $message;
+            echo "<div class='container'>
+                    <div class='alert alert-danger text-center' role='alert'>
+                        {$message}
+                    </div>
+                </div>";
         }
     }
 }
@@ -42,7 +61,7 @@ if (isset($_POST['admin-edit-user-submit'])) {
 
 <div class="container d-flex align-items-center justify-content-center min-vh-100">
     <div class="col-md-6">
-        <h1 class="text-center mb-4">Admin - Edit User</h1>
+        <h1 class="text-center mb-4">Redigera användare</h1>
 
         <form action="" method="post" class="bg-light p-4 rounded shadow-sm">
 
@@ -57,29 +76,29 @@ if (isset($_POST['admin-edit-user-submit'])) {
             </div>    
 
             <div class="mb-3">
-                <label for="uname" class="form-label">Username</label>
+                <label for="uname" class="form-label">Användarnamn</label>
                 <input type="text" class="form-control" name="uname" id="uname" value="<?php echo $userInfoArray['u_name'] ?>" readonly required>
             </div>
 
             <div class="mb-3">
-                <label for="umail" class="form-label">Email</label>
+                <label for="umail" class="form-label">E-post</label>
                 <input type="email" class="form-control" name="umail" id="umail" value="<?php echo $userInfoArray['u_email'] ?>" required>
             </div>
 
             <input type="hidden" name="upassold" id="upassold" value="asdfs123" readonly required>
 
             <div class="mb-3">
-                <label for="upassnew" class="form-label">New Password</label>
-                <input type="password" class="form-control" name="upassnew" id="upassnew" required>
+                <label for="upassnew" class="form-label">Nytt lösenord</label>
+                <input type="password" class="form-control" name="upassnew" id="upassnew">
             </div>
 
             <div class="mb-3">
-                <label for="upassrepeat" class="form-label">Repeat Password</label>
-                <input type="password" class="form-control" name="upassrepeat" id="upassrepeat" required>
+                <label for="upassrepeat" class="form-label">Upprepa nytt lösenord</label>
+                <input type="password" class="form-control" name="upassrepeat" id="upassrepeat">
             </div>
 
             <div class="mb-3">
-                <label for="role" class="form-label">User Role</label>
+                <label for="role" class="form-label">Användarroll</label>
                 <select class="form-select" name="urole" id="role">
                     <?php
                         foreach ($roleArray as $role) {
@@ -92,17 +111,17 @@ if (isset($_POST['admin-edit-user-submit'])) {
 
             <div class="form-check mb-3">
                 <input type="checkbox" class="form-check-input" id="is-disabled" name="is-disabled" value="1" <?php if($userInfoArray['u_status'] === 0){echo "checked";} ?>>
-                <label class="form-check-label" for="is-disabled">Disable Account</label>
+                <label class="form-check-label" for="is-disabled">Inaktivera kontot</label>
             </div>
 
             <div class="d-grid">
-                <input type="submit" class="btn btn-primary" name="admin-edit-user-submit" value="Update">
+                <input type="submit" class="btn btn-primary" name="admin-edit-user-submit" value="Uppdatera">
             </div>
             
         </form>
 
         <div class="text-center mt-4">
-            <a class="btn btn-danger" href="confirm-delete.php?uid=<?php echo $_GET['uid']; ?>">Delete This User</a>
+            <a class="btn btn-danger" href="confirm-delete.php?uid=<?php echo $_GET['uid']; ?>">Radera denna användare</a>
         </div>
     </div>
 </div>

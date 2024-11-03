@@ -56,18 +56,22 @@ class User {
             }
         }
         // END Check if user-entered username or email exists in the database
-    
-        // START Check if user-entered passwords match each other, and are at least 8 characters long
-        if ($upass !== $upassrepeat) {
-            array_push($this->errorMessages, "Lösenorden matchar inte!");
-            $this->errorState = 1;
-        } else {
-            if (strlen($upass) < 8) {
-                array_push($this->errorMessages, "Lösenordet är för kort!");
+        
+        // START Conditionally check passwords if they are provided
+        if (isset($_POST['register-submit']) || (!empty($upass) || !empty($upassrepeat))) {
+            // Check if passwords match
+            if ($upass !== $upassrepeat) {
+                array_push($this->errorMessages, "Angivna lösenorden matchar inte!");
                 $this->errorState = 1;
+            } else {
+                // Check if password length is at least 8 characters
+                if (strlen($upass) < 8) {
+                    array_push($this->errorMessages, "Angivna lösenordet är för kort!");
+                    $this->errorState = 1;
+                }
             }
         }
-        // END Check if user-entered passwords match each other, and are at least 8 characters long
+        // END Conditionally check passwords if they are provided
     
         // START Check if user-entered email is a "real" address
         if (!filter_var($umail, FILTER_VALIDATE_EMAIL)) {
@@ -180,13 +184,17 @@ class User {
         // Clean and validate first name
         $cleanedFname = $this->cleanInput($ufname);
         if (empty($cleanedFname) || !preg_match("/^[a-zA-Z\s]+$/", $cleanedFname)) {
-            return "Förnamn får inte vara tomt och får endast innehålla bokstäver!";
+            array_push($this->errorMessages, "Förnamn får inte vara tomt och får endast innehålla bokstäver! ");
+            return $this->errorMessages;
+            //return "Förnamn får inte vara tomt och får endast innehålla bokstäver!";
         }
     
         // Clean and validate last name
         $cleanedLname = $this->cleanInput($ulname);
         if (empty($cleanedLname) || !preg_match("/^[a-zA-Z\s]+$/", $cleanedLname)) {
-            return "Efternamn får inte vara tomt och får endast innehålla bokstäver!";
+            array_push($this->errorMessages, "Efternamn får inte vara tomt och får endast innehålla bokstäver! ");
+            return $this->errorMessages;
+            //return "Efternamn får inte vara tomt och får endast innehålla bokstäver!";
         }
     
         // Get password and current email of the user
@@ -198,7 +206,9 @@ class User {
         if (isset($_POST['edit-user-submit'])) {
             // Check if entered password is correct
             if (!password_verify($upassold, $userDetails['u_password'])) {
-                return "The password is invalid";
+                array_push($this->errorMessages, "Lösenordet är inte giltigt ");
+                return $this->errorMessages;    
+                //return "The password is invalid";
             }
         }
     
@@ -232,16 +242,34 @@ class User {
         if ($stmt_editUserInfo->execute() && $uid == $_SESSION['user_id']) {
             $_SESSION['user_email'] = $umail; // Update session email if changed
         }
+
+        if ($this->errorState == 1) {
+            return $this->errorMessages;
+        } else {
+            return 1;    
+        }
     }
     
     
 
-    public function searchUsers($input) {
+    public function searchUsers(string $input, int $includeInactive) {
         // Replace all whitespace characters with % wildcards
         $input = preg_replace('/\s+/', '%', $input);
 
         $inputJoker = "%".$input."%";
-        $stmt_searchUsers = $this->pdo->prepare('SELECT * FROM table_users WHERE u_name LIKE :uname OR u_email LIKE :email OR u_fname LIKE :fname OR u_lname LIKE :lname OR CONCAT(u_fname, u_lname) LIKE :fullname');
+
+        // Start building the query
+        $searchQuery = 'SELECT * FROM table_users WHERE (u_name LIKE :uname OR u_email LIKE :email OR u_fname LIKE :fname OR u_lname LIKE :lname OR CONCAT(u_fname, u_lname) LIKE :fullname)';
+
+         // Conditionally add status filter
+        if (!$includeInactive) {
+            $searchQuery .= ' AND u_status = 1';
+        }
+
+        // Add ORDER BY clause to sort by u_fname, then u_lname
+        $searchQuery .= ' ORDER BY u_fname ASC, u_lname ASC';
+
+        $stmt_searchUsers = $this->pdo->prepare($searchQuery);
         $stmt_searchUsers->bindParam(':uname', $inputJoker, PDO::PARAM_STR);
         $stmt_searchUsers->bindParam(':email', $inputJoker, PDO::PARAM_STR);
         $stmt_searchUsers->bindParam(':fname', $inputJoker, PDO::PARAM_STR);
@@ -256,10 +284,10 @@ class User {
     public function populateUserField($usersArray) {
         foreach ($usersArray as $user) {
             echo "
-            <tr>
+            <tr " . ($user['u_status'] === 0 ? "class='table-danger'" : "") . " onclick=\"window.location.href='admin-account.php?uid={$user['u_id']}';\" style=\"cursor: pointer;\">
+                <td>{$user['u_fname']} {$user['u_lname']}</td>
                 <td>{$user['u_name']}</td>
                 <td>{$user['u_email']}</td>
-                <td><a class='btn btn-primary' href='admin-account.php?uid={$user['u_id']}'>Redigera</a><br></td>
             </tr>";
         }
     }

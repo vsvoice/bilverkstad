@@ -9,7 +9,10 @@ if( isset($_GET["q"])) {
     $search = " ";
 }
 
-$usersArray = $user->searchUsers($search);
+// Retrieve checkbox status
+$includeInactive = isset($_GET['includeInactive']) && $_GET['includeInactive'] == '1';
+
+$usersArray = $user->searchUsers($search, $includeInactive);
 
 $user->populateUserField($usersArray);
 ?>

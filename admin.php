@@ -21,16 +21,24 @@ if (isset($_POST['search-users-submit']) && !empty($_POST['search'])) {
         <a class="btn btn-primary mb-2" href="newuser.php">Skapa ny användare</a>
 
         <div class="mt-3">
-            <label for="search" class="form-label">Sök användare (användarnamn eller e-post)</label><br>
-            <input class="form-control" type="text" name="search" id="search" onkeyup="searchUsers(this.value)"><br>
+            <label for="search" class="form-label">Sök bland användare (namn, användarnamn eller e-post)</label><br>
+            <input class="form-control mb-2" type="text" name="search" id="search" onkeyup="searchUsers(this.value)">
+            <div class="form-check">
+                <input class="form-check-input" type="checkbox" id="include-inactive" name="include-inactive" onchange="searchUsers(this.value)">
+                <label class="form-check-label" for="include-inactive">
+                    Inkludera inaktiva användare
+                </label>
+            </div>
         </div>
 
-        <table class='table table-striped'>
+        <p class="mt-5 mb-2 fst-italic">Tryck på valfri användare för att redigera dess uppgifter.</p>
+
+        <table class='table table-striped table-hover'>
             <thead>
                 <tr>
+                <th scope='col'>Namn</th>
                 <th scope='col'>Användarnamn</th>
                 <th scope='col'>E-post</th>
-                <th scope='col'></th>
                 </tr>
             </thead>
             <tbody id="user-field">
@@ -43,21 +51,30 @@ if (isset($_POST['search-users-submit']) && !empty($_POST['search'])) {
 <script>
     document.addEventListener("DOMContentLoaded", function() {
         // Code to run when the DOM is ready
-        searchUsers(" ");
+        searchUsers();
+    });
+
+    document.getElementById("include-inactive").addEventListener("change", function() {
+        var str = document.getElementById("search").value;
+        searchUsers(str);
     });
 
     function searchUsers(str) {
-    if (str.length == 0) {
-        str = " ";
-    }
-    var xmlhttp = new XMLHttpRequest();
-    xmlhttp.onreadystatechange = function() {
-    if (this.readyState == 4 && this.status == 200) {
-        document.getElementById("user-field").innerHTML = this.responseText;
-    }
-    };
-    xmlhttp.open("GET", "ajax/search_users.php?q=" + str, true);
-    xmlhttp.send();
+        if (str === undefined || str === null || str.length === 0) {
+            str = " ";
+        }
+
+        // Get the checkbox status
+        var includeInactive = document.getElementById("include-inactive").checked ? 1 : 0;
+        
+        var xmlhttp = new XMLHttpRequest();
+        xmlhttp.onreadystatechange = function() {
+            if (this.readyState == 4 && this.status == 200) {
+                document.getElementById("user-field").innerHTML = this.responseText;
+            }
+        };
+        xmlhttp.open("GET", "ajax/search_users.php?q=" + str + "&includeInactive=" + includeInactive, true);
+        xmlhttp.send();
     }
 </script>
 
