@@ -19,13 +19,18 @@ class Car {
             $stmt_insertNewCar->bindParam(':brand', $brand, PDO::PARAM_STR);
             $stmt_insertNewCar->bindParam(':model', $model, PDO::PARAM_STR);
             $stmt_insertNewCar->bindParam(':license', $license, PDO::PARAM_STR);
-            $stmt_insertNewCar->execute();
 
-            // Check if query returns any result
-            if($stmt_insertNewCar->rowCount() > 0) {
-                array_push($this->errorMessages, "Användaren finns redan ");
+            if(!$stmt_insertNewCar->execute()) {
+                array_push($this->errorMessages, "Lyckades inte skapa bilen ");
                 $this->errorState = 1;
             }
+
+            // Check if query returns any result
+            /*
+            if($stmt_insertNewCar->rowCount() > 0) {
+                array_push($this->errorMessages, "Bilen finns redan ");
+                $this->errorState = 1;
+            }*/
 
             if ($this->errorState == 1) {
                 return $this->errorMessages;

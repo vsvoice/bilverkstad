@@ -25,11 +25,17 @@ class Customer {
             $stmt_insertNewCustomer->bindParam(':area', $area, PDO::PARAM_STR);
             $stmt_insertNewCustomer->execute();
 
-            // Check if query returns any result
-            if($stmt_insertNewCustomer->rowCount() > 0) {
-                array_push($this->errorMessages, "Användaren finns redan ");
+            if(!$stmt_insertNewCustomer->execute()) {
+                array_push($this->errorMessages, "Lyckades inte skapa kunden ");
                 $this->errorState = 1;
             }
+
+            // Check if query returns any result
+            /*
+            if($stmt_insertNewCustomer->rowCount() > 0) {
+                array_push($this->errorMessages, "Kunden finns redan ");
+                $this->errorState = 1;
+            }*/
 
             if ($this->errorState == 1) {
                 return $this->errorMessages;

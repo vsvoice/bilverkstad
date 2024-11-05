@@ -34,7 +34,7 @@ class Project {
         }
     }
 
-    public function selectSingleProject($projectId) {
+    public function selectSingleProject(int $projectId) {
         // Select data from single project in table_projects
         $projectDataArray = $this->pdo->query("SELECT 
             table_projects.*, 
@@ -51,7 +51,7 @@ class Project {
                 return $projectDataArray;
     }
 
-    public function selectProjectProducts($projectId) {
+    public function selectProjectProducts(int $projectId) {
         // Select all products linked to project in table_project_product
         $projectProductsArray = $this->pdo->query("SELECT table_products.*
             FROM table_products
@@ -87,7 +87,7 @@ class Project {
 
 
             // Check if query is successful
-            if($stmt_insertIntoProjectProduct->execute()) {
+            if(!$stmt_insertIntoProjectProduct->execute()) {
                 array_push($this->errorMessages, "Lyckades inte mata in i tabellen table_project_product ");
                 $this->errorState = 1;
             }
@@ -161,19 +161,25 @@ class Project {
         $stmt_selectWorkingHours = $this->pdo->prepare('SELECT *
             FROM table_hours 
             WHERE u_id_fk = :uid AND h_date = :hdate AND p_id_fk = :pid'
-        );
+        ); 
 
         $stmt_selectWorkingHours->bindParam(':uid', $userId, PDO::PARAM_INT);
         $stmt_selectWorkingHours->bindParam(':hdate', $date, PDO::PARAM_STR);
         $stmt_selectWorkingHours->bindParam(':pid', $projectId, PDO::PARAM_INT);
-        
+        $stmt_selectWorkingHours->execute();
         return $stmt_selectWorkingHours->fetch();
     }
 
     public function selectTotalWorkingHours(int $userId, int $projectId) {
 
         // SELECT total hours on project for current user from table_hours
-        $stmt_selectWorkingHours = $this->pdo->prepare('SELECT SUM(h_amount) AS total_hours FROM table_hours WHERE u_id_fk = :uid AND p_id_fk = :pid');
+        $stmt_selectWorkingHours = $this->pdo->prepare('SELECT 
+            SUM(h_amount) AS total_project_hours,
+            SUM(CASE WHEN u_id_fk = :uid THEN h_amount ELSE 0 END) AS user_hours 
+        FROM 
+            table_hours 
+        WHERE 
+            p_id_fk = :pid');
 
         $stmt_selectWorkingHours->bindParam(':uid', $userId, PDO::PARAM_INT);
         $stmt_selectWorkingHours->bindParam(':pid', $projectId, PDO::PARAM_INT);

@@ -7,6 +7,22 @@ if (isset($_POST['new-car-submit'])) {
 		$user->cleanInput($_POST['model']), 
 		$user->cleanInput($_POST['license'])
 	);
+
+	if($feedbackMessages === 1) {
+		echo "<div class='container'>
+				<div class='alert alert-success text-center' role='alert'>
+					Bilen har skapats.
+				</div>
+			</div>";
+	} else {
+		echo "<div class='container'>";
+		foreach($feedbackMessages as $message) {
+			echo "<div class='alert alert-danger text-center' role='alert'>";
+			echo 	$message;
+			echo "</div>";
+		}
+		echo "</div>";
+    }
 }
 ?>
 

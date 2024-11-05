@@ -89,14 +89,6 @@ $adminMenuLinks = array(
 				<li class='nav-item'>
 					<a class='nav-link' href='?logout=1.php'>Logga ut</a>
 				</li>";
-			} else {
-				echo "
-				<li class='nav-item'>
-					<a class='nav-link' href='index.php'>Logga in</a>
-				</li>
-				<li class='nav-item'>
-					<a class='nav-link' href='newuser.php'>Ny användare</a>
-				</li>";
 			}
 		
 			?>
