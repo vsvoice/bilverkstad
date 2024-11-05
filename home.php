@@ -20,10 +20,10 @@ if ($isBoss || $isAdmin) {
     // Boss and Admin see all projects
     $status_condition = [1, 2, 3, 4, 5, 6, 7];
 } elseif ($isAccountant) {
-    // Accountants see projects with status 3 and 4
+    // Accountants see projects with status 3, 4 and 5
     $status_condition = [3, 4, 5];
 } elseif ($isMechanic) {
-    // Mechanics see projects with status 1 and 2
+    // Mechanics see projects with status 1, 2 and 3
     $status_condition = [1, 2, 3];
 }
 
@@ -31,17 +31,20 @@ if ($isBoss || $isAdmin) {
 if (!empty($status_condition)) {
     $status_placeholders = implode(',', array_fill(0, count($status_condition), '?'));
     $sql = "
-        SELECT p.*, 
-               c.customer_fname, 
-               c.customer_lname, 
-               ca.car_brand, 
-               ca.car_model 
-        FROM table_projects p
-        LEFT JOIN table_cars ca ON p.car_id_fk = ca.car_id
-        LEFT JOIN table_customers c ON p.customer_id_fk = c.customer_id
-        WHERE p.status_id_fk IN ($status_placeholders)
-        ORDER BY p.status_id_fk
+       SELECT p.*, 
+       c.customer_fname, 
+       c.customer_lname, 
+       ca.car_brand, 
+       ca.car_model,
+       ca.car_license,
+       p.creation_date  
+    FROM table_projects p
+    LEFT JOIN table_cars ca ON p.car_id_fk = ca.car_id
+    LEFT JOIN table_customers c ON p.customer_id_fk = c.customer_id
+    WHERE p.status_id_fk IN ($status_placeholders)
+    ORDER BY p.status_id_fk
     ";
+    // Include car_license in the SELECT statement, Make sure to select the creation_date
 
     $stmt = $pdo->prepare($sql);
     $stmt->execute($status_condition);
@@ -54,7 +57,8 @@ if (!empty($status_condition)) {
 ?>
 
 <div class="container text-center">
-    <div class="mw-500 mx-auto">
+    <div class="mx-auto">
+    <p class="mt-5 mb-3 fst-italic">Tryck på valfritt projekt att öppna det.</p>
         <!-- Array of project statuses -->
         <?php
         $statuses = [
@@ -70,20 +74,30 @@ if (!empty($status_condition)) {
         foreach ($statuses as $status_id => $status_title): ?>
             <?php if (isset($projects_by_status[$status_id])): // Check if the user has projects in this status ?>
                 <div class="row my-3">
-                    <h2><?php echo $status_title; ?></h2>
+                    <h1 class="h4"><?php echo $status_title; ?></h1>
                     <div class="col">
                         <div class="row d-flex justify-content-center">
                             <?php foreach ($projects_by_status[$status_id] as $project): ?>
-                                <div class="col mb-4">
-                                    <div class="card" style="border: none; min-height: 100px;" onclick="window.location.href='project.php?project_id=<?php echo htmlspecialchars($project['project_id']); ?>'">
+                                <?php
+                                    // Calculate the number of days since the project creation date
+                                    $creationDate = new DateTime($project['creation_date']);
+                                    $currentDate = new DateTime();
+                                    $interval = $currentDate->diff($creationDate);
+                                    $daysWaiting = $interval->days;
+
+                                    // Set the border color based on the waiting time
+                                    $borderColor = ($daysWaiting >= 14) ? 'red' : 'green';
+                                ?>
+                                <div class="col-6 mb-4">
+                                    <div class="card" style="border: 5px solid <?php echo htmlspecialchars($borderColor); ?>; min-height: 100px;" onclick="window.location.href='project.php?project_id=<?php echo htmlspecialchars($project['project_id']); ?>'">
                                         <div class="card-body">
-                                            <h5 class="card-title" style="text-decoration: none; color: inherit;">
-                                                <?php echo htmlspecialchars($project['work_desc']); ?>
-                                            </h5>
+                                        <h5 class="card-title" style="text-decoration: none; color: inherit;">
+                                            <?php echo htmlspecialchars($project['car_license']);  // Use car_license for the card title ?> 
+                                        </h5>
                                             <div class="d-flex justify-content-between">
                                                 <p class="card-text mb-0"><strong>Bil:</strong><br> <?php echo htmlspecialchars($project['car_brand']) . ' ' . htmlspecialchars($project['car_model']); ?></p>
                                                 <p class="card-text mb-0"><strong>Kund:</strong><br> <?php echo htmlspecialchars($project['customer_fname']) . ' ' . htmlspecialchars($project['customer_lname']); ?></p>
-                                                <p class="card-text mb-0"><strong>Felbeskrivning:</strong><br> <?php echo htmlspecialchars($project['defect_desc']); ?></p>
+                                                <p class="card-text mb-0"><strong>Start Datum:</strong><br> <?php echo htmlspecialchars(date('d.m.Y', strtotime($project['creation_date']))); ?></p>
                                             </div>
                                         </div>
                                     </div>
