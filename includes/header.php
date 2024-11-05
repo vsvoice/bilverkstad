@@ -36,7 +36,11 @@ $adminMenuLinks = array(
     array(
         "title" => "Administratör",
         "url" => "admin.php"
-    )
+	),
+	array(
+        "title" => "Arbetstider",
+        "url" => "workinghours.php"
+	)
 );
 ?>
 

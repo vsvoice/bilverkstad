@@ -18,6 +18,7 @@ else {
 	exit;
 }
 
+$statusesData = $project->selectAllStatusData();
 $currentDate = date("Y-m-d");
 
 $projectProductsArray = $project->selectProjectProducts($projectId);
@@ -33,10 +34,20 @@ if (isset($_POST['new-product-submit'])) {
 		$projectId
 	);
 
-	if($feedbackMessages !== 1) {
+	if($feedbackMessages === 1) {
+		echo "<div class='container'>
+				<div class='alert alert-success text-center' role='alert'>
+					Produkten har lagts till i projektet.
+				</div>
+			</div>";
+	} else {
+		echo "<div class='container'>";
 		foreach($feedbackMessages as $message) {
-			echo $message;
+			echo "<div class='alert alert-danger text-center' role='alert'>";
+			echo 	$message;
+			echo "</div>";
 		}
+		echo "</div>";
     }
 }
 
@@ -48,10 +59,20 @@ if (isset($_POST['edit-product-submit'])) {
 		$_POST['edit-prod-id']
 	);
 
-	if($feedbackMessages !== 1) {
+	if($feedbackMessages === 1) {
+		echo "<div class='container'>
+				<div class='alert alert-success text-center' role='alert'>
+					Produkten har uppdaterats.
+				</div>
+			</div>";
+	} else {
+		echo "<div class='container'>";
 		foreach($feedbackMessages as $message) {
-			echo $message;
+			echo "<div class='alert alert-danger text-center' role='alert'>";
+			echo 	$message;
+			echo "</div>";
 		}
+		echo "</div>";
     }
 }
 
@@ -73,10 +94,20 @@ if (isset($_POST['work-hours-submit'])) {
 		$user->cleanInput( $_POST['work-date'])
 	);
 
-	if($feedbackMessages !== 1) {
+	if($feedbackMessages === 1) {
+		echo "<div class='container'>
+				<div class='alert alert-success text-center' role='alert'>
+					Arbetstiden har uppdaterats.
+				</div>
+			</div>";
+	} else {
+		echo "<div class='container'>";
 		foreach($feedbackMessages as $message) {
-			echo $message;
+			echo "<div class='alert alert-danger text-center' role='alert'>";
+			echo 	$message;
+			echo "</div>";
 		}
+		echo "</div>";
     }
 }
 
@@ -114,13 +145,11 @@ if (isset($_POST['work-hours-submit'])) {
 		<form method="POST" action="update-status.php">
             <input type="hidden" name="project_id" value="<?php echo $projectId; ?>">
             <select class="form-select mt-4" name="status_id" aria-label="Project Status" onchange="this.form.submit()">
-                <option value="1" <?php echo $projectDataArray['status_id_fk'] == 1 ? 'selected' : ''; ?>>I kö</option>
-                <option value="2" <?php echo $projectDataArray['status_id_fk'] == 2 ? 'selected' : ''; ?>>Pågående</option>
-                <option value="3" <?php echo $projectDataArray['status_id_fk'] == 3 ? 'selected' : ''; ?>>Pausad</option>
-                <option value="4" <?php echo $projectDataArray['status_id_fk'] == 4 ? 'selected' : ''; ?>>Klar för fakturering</option>
-                <option value="5" <?php echo $projectDataArray['status_id_fk'] == 5 ? 'selected' : ''; ?>>Fakturerad</option>
-                <option value="6" <?php echo $projectDataArray['status_id_fk'] == 6 ? 'selected' : ''; ?>>Betalad</option>
-                <option value="7" <?php echo $projectDataArray['status_id_fk'] == 7 ? 'selected' : ''; ?>>Avbokad</option>
+				<?php
+					foreach ($statusesData as $status) {
+						echo "<option value='" . $status['s_id'] . "' " . ($projectDataArray['status_id_fk'] == $status['s_id'] ? 'selected' : '') . ">" . $status['s_name'] . "</option>";
+					}
+				?>
             </select>
         </form>
 

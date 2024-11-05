@@ -75,17 +75,15 @@ if (!empty($status_condition)) {
                         <div class="row d-flex justify-content-center">
                             <?php foreach ($projects_by_status[$status_id] as $project): ?>
                                 <div class="col mb-4">
-                                    <div class="card" style="border: none; min-height: 100px;">
+                                    <div class="card" style="border: none; min-height: 100px;" onclick="window.location.href='project.php?project_id=<?php echo htmlspecialchars($project['project_id']); ?>'">
                                         <div class="card-body">
-                                            <h5 class="card-title">
-                                                <a href="project.php?project_id=<?php echo htmlspecialchars($project['project_id']); ?>" style="text-decoration: none; color: inherit;">
-                                                    <?php echo htmlspecialchars($project['work_desc']); ?>
-                                                </a>
+                                            <h5 class="card-title" style="text-decoration: none; color: inherit;">
+                                                <?php echo htmlspecialchars($project['work_desc']); ?>
                                             </h5>
-                                            <div class="d-flex justify-content-between align-items-center">
-                                                <p class="card-text mb-0"><strong>Car:</strong> <?php echo htmlspecialchars($project['car_brand']) . ' ' . htmlspecialchars($project['car_model']); ?></p>
-                                                <p class="card-text mb-0"><strong>Customer:</strong> <?php echo htmlspecialchars($project['customer_fname']) . ' ' . htmlspecialchars($project['customer_lname']); ?></p>
-                                                <p class="card-text mb-0"><strong>Defect Description:</strong> <?php echo htmlspecialchars($project['defect_desc']); ?></p>
+                                            <div class="d-flex justify-content-between">
+                                                <p class="card-text mb-0"><strong>Bil:</strong><br> <?php echo htmlspecialchars($project['car_brand']) . ' ' . htmlspecialchars($project['car_model']); ?></p>
+                                                <p class="card-text mb-0"><strong>Kund:</strong><br> <?php echo htmlspecialchars($project['customer_fname']) . ' ' . htmlspecialchars($project['customer_lname']); ?></p>
+                                                <p class="card-text mb-0"><strong>Felbeskrivning:</strong><br> <?php echo htmlspecialchars($project['defect_desc']); ?></p>
                                             </div>
                                         </div>
                                     </div>

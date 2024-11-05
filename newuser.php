@@ -9,7 +9,7 @@ if(isset($_POST['register-submit'])) {
 		if($signUpFeedback === 1) {
 			echo "<div class='container'>
 					<div class='alert alert-success text-center' role='alert'>
-						You have successfully signed up. Please login using the form below.
+						Användaren har skapats.
 					</div>
 				</div>";
 		}

@@ -28,19 +28,18 @@ if(isset($_POST['user-login'])) {
 	?>
 
 	<div class="mw-500 mx-auto">
-		<h1 class="my-5">Login Form</h1>
+		<h1 class="my-5">Logga in</h1>
 		<form action="" method="post">
 
-			<label class="form-label" for="uname">Username or Email</label><br>
+			<label class="form-label" for="uname">Användarnamn eller e-post</label><br>
 			<input class="form-control" type="text" name="uname" id="uname"><br>
 
-			<label class="form-label" for="upass">Password</label><br>
+			<label class="form-label" for="upass">Lösenord</label><br>
 			<input class="form-control" type="password" name="upass" id="upass"><br>
 
-			<input class="btn btn-primary py-2 px-4" type="submit" name="user-login" value="Login">
+			<input class="btn btn-primary py-2 px-4" type="submit" name="user-login" value="Logga in">
 			
 		</form>
-		<p class="text-center mt-4">Don't have an account? <a href="index.php">Sign up</a></p>
 	</div>
 </div>
 

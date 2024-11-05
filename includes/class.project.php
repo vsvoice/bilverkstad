@@ -64,32 +64,33 @@ class Project {
 
         $prodPrice = str_replace(',', '.', $prodPrice);
         if (!is_numeric($prodPrice)) {
-            array_push($this->errorMessages, "Det angivna priset är inte ett giltigt tal ");
+            array_push($this->errorMessages, "Det angivna produktpriset är inte ett giltigt tal ");
             $this->errorState = 1;
         }
 
-        $stmt_insertNewProduct = $this->pdo->prepare('INSERT INTO table_products (name, price, invoice_number)
-            VALUES 
-            (:prodName, :prodPrice, :prodNumber)');
-        $stmt_insertNewProduct->bindParam(':prodName', $prodName, PDO::PARAM_STR);
-        $stmt_insertNewProduct->bindParam(':prodPrice', $prodPrice, PDO::PARAM_STR);
-        $stmt_insertNewProduct->bindParam(':prodNumber', $prodNumber, PDO::PARAM_STR);
-        $stmt_insertNewProduct->execute();
+        if ($this->errorState !== 1) {
+            $stmt_insertNewProduct = $this->pdo->prepare('INSERT INTO table_products (name, price, invoice_number)
+                VALUES 
+                (:prodName, :prodPrice, :prodNumber)');
+            $stmt_insertNewProduct->bindParam(':prodName', $prodName, PDO::PARAM_STR);
+            $stmt_insertNewProduct->bindParam(':prodPrice', $prodPrice, PDO::PARAM_STR);
+            $stmt_insertNewProduct->bindParam(':prodNumber', $prodNumber, PDO::PARAM_STR);
+            $stmt_insertNewProduct->execute();
 
-        $lastProductId = $this->pdo->lastInsertId();
+            $lastProductId = $this->pdo->lastInsertId();
 
-        $stmt_insertIntoProjectProduct = $this->pdo->prepare('INSERT INTO table_project_product (project_id_fk, product_id_fk)
-            VALUES 
-            (:projectId, :productId)');
-        $stmt_insertIntoProjectProduct->bindParam(':projectId', $projectId, PDO::PARAM_INT);
-        $stmt_insertIntoProjectProduct->bindParam(':productId', $lastProductId, PDO::PARAM_STR);
-        $stmt_insertIntoProjectProduct->execute();
+            $stmt_insertIntoProjectProduct = $this->pdo->prepare('INSERT INTO table_project_product (project_id_fk, product_id_fk)
+                VALUES 
+                (:projectId, :productId)');
+            $stmt_insertIntoProjectProduct->bindParam(':projectId', $projectId, PDO::PARAM_INT);
+            $stmt_insertIntoProjectProduct->bindParam(':productId', $lastProductId, PDO::PARAM_STR);
 
 
-        // Check if query returns any result
-        if($stmt_insertIntoProjectProduct->rowCount() > 0) {
-            array_push($this->errorMessages, "Lyckades inte mata in i tabellen table_project_product ");
-            $this->errorState = 1;
+            // Check if query is successful
+            if($stmt_insertIntoProjectProduct->execute()) {
+                array_push($this->errorMessages, "Lyckades inte mata in i tabellen table_project_product ");
+                $this->errorState = 1;
+            }
         }
 
         if ($this->errorState == 1) {
@@ -108,19 +109,20 @@ class Project {
             $this->errorState = 1;
         }
 
-        $stmt_editProduct = $this->pdo->prepare('UPDATE table_products 
-            SET name = :name, price = :price, invoice_number = :number
-            WHERE product_id = :productId');
-        $stmt_editProduct->bindParam(':name', $prodName, PDO::PARAM_STR);
-        $stmt_editProduct->bindParam(':price', $prodPrice, PDO::PARAM_STR);
-        $stmt_editProduct->bindParam(':number', $prodNumber, PDO::PARAM_STR);
-        $stmt_editProduct->bindParam(':productId', $prodId, PDO::PARAM_INT);
+        if ($this->errorState !== 1) {
+            $stmt_editProduct = $this->pdo->prepare('UPDATE table_products 
+                SET name = :name, price = :price, invoice_number = :number
+                WHERE product_id = :productId');
+            $stmt_editProduct->bindParam(':name', $prodName, PDO::PARAM_STR);
+            $stmt_editProduct->bindParam(':price', $prodPrice, PDO::PARAM_STR);
+            $stmt_editProduct->bindParam(':number', $prodNumber, PDO::PARAM_STR);
+            $stmt_editProduct->bindParam(':productId', $prodId, PDO::PARAM_INT);
 
-        if(!$stmt_editProduct->execute()) {
-            array_push($this->errorMessages, "Lyckades inte uppdatera produktuppgifter ");
-            $this->errorState = 1;
+            if(!$stmt_editProduct->execute()) {
+                array_push($this->errorMessages, "Lyckades inte uppdatera produktuppgifter ");
+                $this->errorState = 1;
+            }
         }
-
         if ($this->errorState == 1) {
             return $this->errorMessages;
         } else {
@@ -133,15 +135,17 @@ class Project {
         $stmt_deleteProductAssoc = $this->pdo->prepare('DELETE FROM table_project_product WHERE product_id_fk = :productId');
         $stmt_deleteProductAssoc->bindParam(':productId', $prodId, PDO::PARAM_INT);
         if(!$stmt_deleteProductAssoc->execute()) {
-            array_push($this->errorMessages, "Lyckades inte radera produkten från table_project_product ");
+            array_push($this->errorMessages, "Lyckades inte radera produkten från projektet ");
             $this->errorState = 1;
         }
-        // DELETE FROM product table
-        $stmt_deleteProduct = $this->pdo->prepare('DELETE FROM table_products WHERE product_id = :productId');
-        $stmt_deleteProduct->bindParam(':productId', $prodId, PDO::PARAM_INT);
-        if(!$stmt_deleteProduct->execute()) {
-            array_push($this->errorMessages, "Lyckades inte radera produkten från table_products ");
-            $this->errorState = 1;
+        if ($this->errorState !== 1) {
+            // DELETE FROM product table
+            $stmt_deleteProduct = $this->pdo->prepare('DELETE FROM table_products WHERE product_id = :productId');
+            $stmt_deleteProduct->bindParam(':productId', $prodId, PDO::PARAM_INT);
+            if(!$stmt_deleteProduct->execute()) {
+                array_push($this->errorMessages, "Lyckades inte radera produkten ");
+                $this->errorState = 1;
+            }
         }
 
         if ($this->errorState == 1) {
@@ -180,37 +184,45 @@ class Project {
 
     public function insertWorkingHours(int $projectId, int $userId, int $hours, string $date) {
 
-        if ($this->selectWorkingHours($date, $userId, $projectId) === false) 
-        {
-            $stmt_insertWorkingHours = $this->pdo->prepare('INSERT INTO table_hours (p_id_fk, u_id_fk, h_amount, h_date)
-            VALUES 
-            (:pid, :uid, :hamount, :hdate)');
-            $stmt_insertWorkingHours->bindParam(':pid', $projectId, PDO::PARAM_INT);
-            $stmt_insertWorkingHours->bindParam(':uid', $userId, PDO::PARAM_INT);
-            $stmt_insertWorkingHours->bindParam(':hamount', $hours, PDO::PARAM_INT);
-            $stmt_insertWorkingHours->bindParam(':hdate', $date, PDO::PARAM_STR);
-
-            if(!$stmt_insertWorkingHours->execute()) {
-                array_push($this->errorMessages, "Lyckades inte mata in arbetstiden ");
-                $this->errorState = 1;
-            }
+        if (!is_numeric($hours)) {
+            array_push($this->errorMessages, "Den angivna arbetstiden är inte ett giltigt tal ");
+            $this->errorState = 1;
         }
-        else 
-        {
-            $stmt_editWorkingHours = $this->pdo->prepare('
-            UPDATE table_hours
-            SET h_amount = :hamount
-            WHERE p_id_fk = :pid AND u_id_fk = :uid AND h_date = :hdate');
-            $stmt_editWorkingHours->bindParam(':hamount', $hours, PDO::PARAM_INT);
-            $stmt_editWorkingHours->bindParam(':pid', $projectId, PDO::PARAM_INT);
-            $stmt_editWorkingHours->bindParam(':uid', $userId, PDO::PARAM_INT);
-            $stmt_editWorkingHours->bindParam(':hdate', $date, PDO::PARAM_STR);
 
-            if(!$stmt_editWorkingHours->execute()) {
-                array_push($this->errorMessages, "Lyckades inte uppdatera arbetstiden ");
-                $this->errorState = 1;
+        if ($this->errorState !== 1) {
+
+            if ($this->selectWorkingHours($date, $userId, $projectId) === false) 
+            {
+                $stmt_insertWorkingHours = $this->pdo->prepare('INSERT INTO table_hours (p_id_fk, u_id_fk, h_amount, h_date)
+                VALUES 
+                (:pid, :uid, :hamount, :hdate)');
+                $stmt_insertWorkingHours->bindParam(':pid', $projectId, PDO::PARAM_INT);
+                $stmt_insertWorkingHours->bindParam(':uid', $userId, PDO::PARAM_INT);
+                $stmt_insertWorkingHours->bindParam(':hamount', $hours, PDO::PARAM_INT);
+                $stmt_insertWorkingHours->bindParam(':hdate', $date, PDO::PARAM_STR);
+
+                if(!$stmt_insertWorkingHours->execute()) {
+                    array_push($this->errorMessages, "Lyckades inte lägga till arbetstiden ");
+                    $this->errorState = 1;
+                }
             }
-    
+            else 
+            {
+                $stmt_editWorkingHours = $this->pdo->prepare('
+                UPDATE table_hours
+                SET h_amount = :hamount
+                WHERE p_id_fk = :pid AND u_id_fk = :uid AND h_date = :hdate');
+                $stmt_editWorkingHours->bindParam(':hamount', $hours, PDO::PARAM_INT);
+                $stmt_editWorkingHours->bindParam(':pid', $projectId, PDO::PARAM_INT);
+                $stmt_editWorkingHours->bindParam(':uid', $userId, PDO::PARAM_INT);
+                $stmt_editWorkingHours->bindParam(':hdate', $date, PDO::PARAM_STR);
+
+                if(!$stmt_editWorkingHours->execute()) {
+                    array_push($this->errorMessages, "Lyckades inte uppdatera arbetstiden ");
+                    $this->errorState = 1;
+                }
+        
+            }
         }
 
         if ($this->errorState == 1) {
@@ -245,21 +257,28 @@ class Project {
         }
     }
 
-public function updateProjectStatus(int $projectId, int $statusId) {
-    // Update the status_id_fk of the project
-    $stmt = $this->pdo->prepare('UPDATE table_projects 
-        SET status_id_fk = :statusId
-        WHERE project_id = :projectId');
-    $stmt->bindParam(':statusId', $statusId, PDO::PARAM_INT);
-    $stmt->bindParam(':projectId', $projectId, PDO::PARAM_INT);
-    $stmt->execute();
+    public function updateProjectStatus(int $projectId, int $statusId) {
+        // Update the status_id_fk of the project
+        $stmt = $this->pdo->prepare('UPDATE table_projects 
+            SET status_id_fk = :statusId
+            WHERE project_id = :projectId');
+        $stmt->bindParam(':statusId', $statusId, PDO::PARAM_INT);
+        $stmt->bindParam(':projectId', $projectId, PDO::PARAM_INT);
+        $stmt->execute();
 
-    if ($stmt->rowCount() > 0) {
-        return true;  // Successfully updated the status
-    } else {
-        return false; // No rows affected or failed
+        if ($stmt->rowCount() > 0) {
+            return true;  // Successfully updated the status
+        } else {
+            return false; // No rows affected or failed
+        }
     }
-}
+
+    public function selectAllStatusData() {
+        $stmt_selectStatusData = $this->pdo->prepare('SELECT * FROM table_statuses');
+        $stmt_selectStatusData->execute();
+        $statusInfo = $stmt_selectStatusData->fetchAll();
+        return $statusInfo;
+    }
 }
 
 ?>

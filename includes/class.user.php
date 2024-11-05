@@ -124,7 +124,7 @@ class User {
 
         // Check if query returns a result
         if($stmt_checkUsername->rowCount() === 0) {
-            array_push($this->errorMessages, "Username or email does not exist! ");
+            array_push($this->errorMessages, "Användarnamnet eller e-postadressen finns inte! ");
             return $this->errorMessages;
             
         }
@@ -140,7 +140,7 @@ class User {
             header("Location: home.php");
             exit();
         } else {
-            array_push($this->errorMessages, "Password is incorrect! ");
+            array_push($this->errorMessages, "Lösenordet är fel! ");
             return $this->errorMessages;
         }
     }
