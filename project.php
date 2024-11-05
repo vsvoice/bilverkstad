@@ -23,6 +23,8 @@ $currentDate = date("Y-m-d");
 
 $projectProductsArray = $project->selectProjectProducts($projectId);
 $todaysWorkingHours = $project->selectWorkingHours($currentDate, $_SESSION['user_id'], $projectId);
+
+var_dump($todaysWorkingHours);
 $totalWorkingHours = $project->selectTotalWorkingHours($_SESSION['user_id'], $projectId);
 
 
@@ -182,8 +184,9 @@ if (isset($_POST['work-hours-submit'])) {
 		</div>
 
 		<div class="row">
-			<div class="col">
-				<p class="h5 my-3">Timmar:<span class="ms-4 fw-normal"><?php echo $totalWorkingHours['total_hours']; ?></span></p>
+			<div class="col-8">
+				<p class="h5 my-4">Din arbetstid:<span class="ms-4 fw-normal"><?php echo $totalWorkingHours['user_hours']; ?> h</span></p>
+				<p class="h5 my-4">Tid för projektet totalt:<span class="ms-4 fw-normal"><?php echo $totalWorkingHours['total_project_hours']; ?> h</span></p>
 			</div>
 			<div class="col text-center">
 				<button type="button" class="btn btn-success my-2" data-bs-toggle="modal" data-bs-target="#workingHoursModal">

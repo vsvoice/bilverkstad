@@ -1,6 +1,12 @@
 <?php
 include_once 'includes/header.php';
 
+if ($user->checkLoginStatus()) {
+    if(!$user->checkUserRole(200)) {
+        header("Location: home.php");
+    }
+}
+
 $currentDate = date("Y-m-d");
 $date30DaysAgo = date("Y-m-d", strtotime("-30 days"));
 
