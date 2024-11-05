@@ -31,17 +31,21 @@ if ($isBoss || $isAdmin) {
 if (!empty($status_condition)) {
     $status_placeholders = implode(',', array_fill(0, count($status_condition), '?'));
     $sql = "
-       SELECT p.*, 
-       c.customer_fname, 
-       c.customer_lname, 
-       ca.car_brand, 
-       ca.car_model,
-       ca.car_license,
-       p.creation_date  
+       SELECT 
+        p.*, 
+        c.customer_fname, 
+        c.customer_lname, 
+        ca.car_brand, 
+        ca.car_model, 
+        ca.car_license, 
+        p.creation_date,
+        MAX(h.h_date) AS most_recent_date  -- Getting the most recent date for each project
     FROM table_projects p
     LEFT JOIN table_cars ca ON p.car_id_fk = ca.car_id
     LEFT JOIN table_customers c ON p.customer_id_fk = c.customer_id
+    LEFT JOIN table_hours h ON p.project_id = h.p_id_fk
     WHERE p.status_id_fk IN ($status_placeholders)
+    GROUP BY p.project_id, c.customer_fname, c.customer_lname, ca.car_brand, ca.car_model, ca.car_license, p.creation_date
     ORDER BY p.status_id_fk
     ";
     // Include car_license in the SELECT statement, Make sure to select the creation_date
@@ -58,9 +62,9 @@ if (!empty($status_condition)) {
 
 <div class="container text-center">
     <div class="mx-auto">
-    <p class="mt-5 mb-3 fst-italic">Tryck på valfritt projekt att öppna det.</p>
+    <p class="mt-5 mb-3 fst-italic">Tryck på valfritt projekt för att öppna det.</p>
         <!-- Array of project statuses -->
-        <?php
+        <?php   
         $statuses = [
             1 => "I Kö",
             2 => "Pågående",
@@ -97,7 +101,8 @@ if (!empty($status_condition)) {
                                             <div class="d-flex justify-content-between">
                                                 <p class="card-text mb-0"><strong>Bil:</strong><br> <?php echo htmlspecialchars($project['car_brand']) . ' ' . htmlspecialchars($project['car_model']); ?></p>
                                                 <p class="card-text mb-0"><strong>Kund:</strong><br> <?php echo htmlspecialchars($project['customer_fname']) . ' ' . htmlspecialchars($project['customer_lname']); ?></p>
-                                                <p class="card-text mb-0"><strong>Start Datum:</strong><br> <?php echo htmlspecialchars(date('d.m.Y', strtotime($project['creation_date']))); ?></p>
+                                                <p class="card-text mb-0"><strong>Startdatum:</strong><br> <?php echo htmlspecialchars(date('d.m.Y', strtotime($project['creation_date']))); ?></p>
+                                                <p class="card-text mb-0"><strong>Senaste aktivitet:</strong><br> <?php if(!empty($project['most_recent_date'])) {echo htmlspecialchars(date('d.m.Y', strtotime($project['most_recent_date'])));} else { echo "Ingen aktivitet";}; ?></p>
                                             </div>
                                         </div>
                                     </div>
