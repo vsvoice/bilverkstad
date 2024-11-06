@@ -15,27 +15,24 @@ header {
 }
 
 .mw-500 {
-    max-width: 500px;
+    max-width: 600px;
 }
 
-.card {
+.project-card {
     cursor: pointer; /* Changes the cursor to indicate the card is clickable */
     transition: transform 0.2s; /* Smooth transition for hover effect */
-    min-height: 100px; /* Set a minimum height for all cards */
-    padding: 20px; /* Adjust padding for space */
-    border: none; /* Remove border */
 }
 
-.card:hover {
+.project-card:hover {
     transform: scale(1.05); /* Slightly scale the card on hover */
 }
 
-.card-title a {
+.project-card.card-title a {
     text-decoration: none; /* Remove underline */
     color: inherit; /* Use the parent element's text color */
 }
 
-.card-title a:hover {
+.project-card.card-title a:hover {
     text-decoration: none; /* Keep it unstyled on hover */
 }
 /*

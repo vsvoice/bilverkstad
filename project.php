@@ -24,7 +24,7 @@ $currentDate = date("Y-m-d");
 $projectProductsArray = $project->selectProjectProducts($projectId);
 $todaysWorkingHours = $project->selectWorkingHours($currentDate, $_SESSION['user_id'], $projectId);
 
-var_dump($todaysWorkingHours);
+//var_dump($todaysWorkingHours);
 $totalWorkingHours = $project->selectTotalWorkingHours($_SESSION['user_id'], $projectId);
 
 
@@ -119,82 +119,103 @@ if (isset($_POST['work-hours-submit'])) {
 <div class="container">
 
 	<div class="mw-500 mx-auto">
-		<h1 class="my-5">Projekt</h1>
 
-		<a class="btn btn-primary mb-2" href="editproject.php?project_id=<?php echo $projectId ?>">Redigera</a>
-
-		<h2 class="h4 my-3">Bil</h2>
-		<div class="row">
-			<p class="h6" id="car-data">
-				<span id="car-brand"><?php echo $projectDataArray['car_brand'] ?></span> 
-				<span id="car-model"><?php echo $projectDataArray['car_model'] ?></span> 
-				<span class="ms-4" id="car-license"><?php echo $projectDataArray['car_license'] ?></span>
-			</p>
+		<a class="btn btn-primary mb-2" href="editproject.php?project_id=<?php echo $projectId ?>">Redigera projektet</a>
+		<div class="card rounded-4 text-start shadow-sm p-4 my-3">
+			<h2 class="h4">Bil</h2>
+			<div class="row">
+				<p class="h6 lh-base mb-0" id="car-data">
+					<span id="car-brand"><?php echo $projectDataArray['car_brand'] ?></span> 
+					<span id="car-model"><?php echo $projectDataArray['car_model'] ?></span> 
+					<span class="ms-4" id="car-license"><?php echo $projectDataArray['car_license'] ?></span>
+				</p>
+			</div>
 		</div>
 
-		<h2 class="h4 mt-4 mb-3">Kund</h2>
-		<div class="row">
-			<p class="h6" id="customer-data">
-				<?php echo "{$projectDataArray['customer_fname']} {$projectDataArray['customer_lname']}" ?>
-				<?php echo "<span class='ms-4'> {$projectDataArray['customer_phone']} </span>"?>
-				<?php echo "<span class='ms-4'> {$projectDataArray['customer_email']} </span>"?>
-				<?php echo "<span class='ms-4'> {$projectDataArray['customer_address']} {$projectDataArray['customer_zip']} {$projectDataArray['customer_area']} </span>"?>
-			</p>
+		<div class="card rounded-4 text-start shadow-sm p-4 my-3">
+			<h2 class="h4">Kund</h2>
+			<div class="row">
+				<p class="h6 lh-base mb-0" id="customer-data">
+					<?php echo "{$projectDataArray['customer_fname']} {$projectDataArray['customer_lname']}" ?>
+					<?php echo "<span class='ms-4'> {$projectDataArray['customer_phone']} </span>"?>
+					<?php echo "<span class='ms-4'> {$projectDataArray['customer_email']} </span>"?>
+					<?php echo "<span class='ms-4'> {$projectDataArray['customer_address']} {$projectDataArray['customer_zip']} {$projectDataArray['customer_area']} </span>"?>
+				</p>
+			</div>
 		</div>
 
-		<h2 class="h4 mt-5 mb-2 fw-bold">Om projektet</h2>
+		<div class="card rounded-4 text-start shadow-sm p-4 mt-5 mb-3">
+			<h2 class="h4 mb-3 fw-bold">Om projektet</h2>
 
-		<form method="POST" action="update-status.php">
-            <input type="hidden" name="project_id" value="<?php echo $projectId; ?>">
-            <select class="form-select mt-4" name="status_id" aria-label="Project Status" onchange="this.form.submit()">
-				<?php
-					foreach ($statusesData as $status) {
-						echo "<option value='" . $status['s_id'] . "' " . ($projectDataArray['status_id_fk'] == $status['s_id'] ? 'selected' : '') . ">" . $status['s_name'] . "</option>";
-					}
-				?>
-            </select>
-        </form>
+			<form method="POST" action="update-status.php">
+				<input type="hidden" name="project_id" value="<?php echo $projectId; ?>">
 
-		<h3 class="h5 mt-4 mb-3">Felbeskrivning</h3>
-		<p><?php echo "{$projectDataArray['defect_desc']}"?></p>
-		<h3 class="h5 mt-4 mb-3">Arbetsbeskrivning</h3>
-		<p><?php echo "{$projectDataArray['work_desc']}"?></p>
-
-		<div class="row">
-			<h3 class="h5 my-3">Produkter</h3>
-				<div class="col-8">
+				<label class="form-label h5 mt-3" for="status_id">Status</label>
+				<select class="form-select mb-3" id="status_id" name="status_id" aria-label="Project Status" onchange="this.form.submit()">
 					<?php
-					echo "<ul class='list-group'>";
-
-					foreach ($projectProductsArray as $product) {
-						echo "<button class='list-group-item list-group-item-action d-flex align-items-center rounded my-1 border shadow-sm' data-bs-toggle='modal' data-bs-target='#editProductModal' value='" . $product['product_id'] . "' onclick='selectProductData(this.value)'>"
-							. $product['name'] 
-							. " <span class='ms-3'>" 
-							. number_format($product['price'], 2, ',', ' ') 
-							. " €</span>
-						</button>";
-					}
-			
-					echo "</ul>";
+						foreach ($statusesData as $status) {
+							echo "<option value='" . $status['s_id'] . "' " . ($projectDataArray['status_id_fk'] == $status['s_id'] ? 'selected' : '') . ">" . $status['s_name'] . "</option>";
+						}
 					?>
-					<button type="button" class="btn btn-success my-3" data-bs-toggle="modal" data-bs-target="#newProductModal" onclick="selectProductData()">
-						Lägg till
-					</button>
+				</select>
+			</form>
+
+			<h3 class="h5 mt-4 mb-2">Felbeskrivning</h3>
+			<p><?php echo "{$projectDataArray['defect_desc']}"?></p>
+			<h3 class="h5 mt-4 mb-2">Arbetsbeskrivning</h3>
+			<p><?php echo "{$projectDataArray['work_desc']}"?></p>
+
+
+				<h3 class="h5 mt-4 mb-2">Produkter</h3>
+					<div class="col-8 mb-4">
+						<?php
+						echo "<ul class='list-group'>";
+
+						foreach ($projectProductsArray as $product) {
+							echo "<button class='list-group-item list-group-item-action d-flex align-items-center rounded px-4 py-3 my-1 border shadow-sm' data-bs-toggle='modal' data-bs-target='#editProductModal' value='" . $product['product_id'] . "' onclick='selectProductData(this.value)'>"
+								. $product['name'] 
+								. " <span class='ms-3'>" 
+								. number_format($product['price'], 2, ',', ' ') 
+								. " €</span>
+							</button>";
+						}
+				
+						echo "</ul>";
+						?>
+						<button type="button" class="btn btn-success mt-2" data-bs-toggle="modal" data-bs-target="#newProductModal" onclick="selectProductData()">
+							Lägg till produkt
+						</button>
+					</div>
+					
+
+					<div class="h5 mt-3 mb-3 <?php if ($user->checkUserRole(50)) { echo "d-none"; } ?>">
+						Din arbetstid:
+						<span class="ms-3 fw-normal">
+						<?php 
+						if (!empty($totalWorkingHours['user_hours'])) {
+							echo $totalWorkingHours['user_hours']; 
+						} else {
+							echo "0";
+						}
+						?> h </span><br>
+						<button type="button" class="btn btn-success my-2" data-bs-toggle="modal" data-bs-target="#workingHoursModal">
+							Lägg till arbetstid
+						</button>
+					</div>
+					
+					<div class="h5 mt-2">Arbetstid totalt för projektet:<span class="ms-3 fw-normal">
+						<?php 
+						if (!empty($totalWorkingHours['total_project_hours'])) {
+							echo $totalWorkingHours['total_project_hours']; 
+						} else {
+							echo "0";
+						}
+						?> h</span>
+					</div>
 				</div>
-		</div>
+					
 
-		<div class="row">
-			<div class="col-8">
-				<p class="h5 my-4">Din arbetstid:<span class="ms-4 fw-normal"><?php echo $totalWorkingHours['user_hours']; ?> h</span></p>
-				<p class="h5 my-4">Tid för projektet totalt:<span class="ms-4 fw-normal"><?php echo $totalWorkingHours['total_project_hours']; ?> h</span></p>
-			</div>
-			<div class="col text-center">
-				<button type="button" class="btn btn-success my-2" data-bs-toggle="modal" data-bs-target="#workingHoursModal">
-					Lägg till
-				</button>
-			</div>
 		</div>
-
 	</div>
 </div>
 
@@ -280,7 +301,7 @@ if (isset($_POST['work-hours-submit'])) {
 					<input type="date" class="form-control" id="work-date" name="work-date" value="<?php echo $currentDate; ?>" required><br>
 
 					<label for="work-hours" class="form-label">Antal timmar</label>
-					<input type="text" class="form-control" id="work-hours" name="work-hours" value="<?php if(!$todaysWorkingHours) { echo ""; } else {echo $todaysWorkingHours['h_amount']; } ?>" required><br>
+					<input type="number" class="form-control" id="work-hours" name="work-hours" min="0" value="<?php if(!$todaysWorkingHours) { echo ""; } else {echo $todaysWorkingHours['h_amount']; } ?>" required><br>
 
 
 				</div>

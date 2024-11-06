@@ -94,7 +94,7 @@ if (!empty($status_condition)) {
                                     $dateColor = ($daysWaiting >= 14) ? 'red' : '';
                                 ?>
                                 <div class="col-12 col-lg-6 mb-4">
-                                    <div class="card rounded-5 text-start border-2 shadow" onclick="window.location.href='project.php?project_id=<?php echo $project['project_id']; ?>'">
+                                    <div class="project-card card rounded-5 text-start border-2 shadow p-4" onclick="window.location.href='project.php?project_id=<?php echo $project['project_id']; ?>'">
                                         <div class="card-body p-2">
                                         <h5 class="card-title fw-bold">
                                             <?php echo $project['car_license'];  // Use car_license for the card title ?> 
