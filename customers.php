@@ -1,7 +1,7 @@
 <?php
 include_once 'includes/header.php';
 
-
+$user->checkLoginStatus();
 ?>
 
 
@@ -33,7 +33,6 @@ include_once 'includes/header.php';
 					<tbody id="customer-field">
 					</tbody>
 				</table>
-				
 			</div>
 		</div>
 	</div>

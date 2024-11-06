@@ -1,6 +1,8 @@
 <?php
 include_once 'includes/header.php';
 
+$user->checkLoginStatus();
+
 // Get project_id from URL
 if (isset($_GET['project_id'])) {
     $projectId = (int)$_GET['project_id'];
@@ -33,7 +35,7 @@ if (isset($_POST['edit-project-submit'])) {
 		$user->cleanInput($_POST['work-desc'])
 	);
 	if($feedbackMessages === 1) {
-		header("Location: project.php?project_id=" . $projectId);
+		header("Location: project.php?project_id=" . $projectId . "&edit-success=1");
 		exit();
 	} else {
 		echo "<div class='container'>";
@@ -97,7 +99,10 @@ if (isset($_POST['edit-project-submit'])) {
 				<textarea class="form-control" id="work-desc" name="work-desc" rows="3"><?php echo $projectDataArray['work_desc']; ?></textarea>
 			</div>
 
-			<input type="submit" class="btn btn-primary mt-4" name="edit-project-submit" value="Spara ändringar">
+			<div class="d-flex justift-content-between mt-4">
+				<input type="submit" class="btn btn-primary me-auto" name="edit-project-submit" value="Spara ändringar">
+				<a class="btn btn-secondary" href="project.php?project_id=<?php echo $projectId; ?>">Avbryt</a>
+			</div>
 		</form>
 	</div>
 </div>

@@ -1,6 +1,8 @@
 <?php
 include_once 'includes/header.php';
 
+$user->checkLoginStatus();
+
 if (isset($_POST['new-car-submit'])) {
     $feedbackMessages = $car->insertNewCar(
 		$user->cleanInput($_POST['brand']), 

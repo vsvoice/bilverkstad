@@ -1,6 +1,8 @@
 <?php
 include_once 'includes/header.php';
 
+$user->checkLoginStatus();
+
 if (isset($_POST['project_id']) && isset($_POST['status_id'])) {
     $projectId = $_POST['project_id'];
     $statusId = $_POST['status_id'];

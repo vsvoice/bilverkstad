@@ -1,6 +1,8 @@
 <?php
 include_once 'includes/header.php';
 
+$user->checkLoginStatus();
+
 // Get project_id from URL
 if (isset($_GET['project_id'])) {
     $projectId = (int)$_GET['project_id'];
@@ -9,13 +11,29 @@ if (isset($_GET['project_id'])) {
     $projectDataArray = $project->selectSingleProject($projectId);
     
     if (!$projectDataArray) {
-        echo "Project not found!";
+        echo "Projektet hittades inte!";
         exit;
     }
 } 
 else {
-	echo "No project selected!";
+	echo "Inget projekt har valts!";
 	exit;
+}
+
+if (isset($_GET['create-success'])) {
+	echo "<div class='container'>
+			<div class='alert alert-success text-center' role='alert'>
+				Projektet har skapats.
+			</div>
+		</div>";
+}
+
+if (isset($_GET['edit-success'])) {
+	echo "<div class='container'>
+			<div class='alert alert-success text-center' role='alert'>
+				Ändringarna har sparats.
+			</div>
+		</div>";
 }
 
 $statusesData = $project->selectAllStatusData();
@@ -119,7 +137,7 @@ if (isset($_POST['work-hours-submit'])) {
 <div class="container">
 
 	<div class="mw-500 mx-auto">
-
+		<a class="btn btn-secondary mb-5" href="home.php">Till startsidan</a><br>
 		<a class="btn btn-primary mb-2" href="editproject.php?project_id=<?php echo $projectId ?>">Redigera projektet</a>
 		<div class="card rounded-4 text-start shadow-sm p-4 my-3">
 			<h2 class="h4">Bil</h2>
@@ -169,18 +187,21 @@ if (isset($_POST['work-hours-submit'])) {
 				<h3 class="h5 mt-4 mb-2">Produkter</h3>
 					<div class="col-8 mb-4">
 						<?php
-						echo "<ul class='list-group'>";
+						if (isset($projectProductsArray) && !empty($projectProductsArray)) {
+							echo "<p class='mb-2 fst-italic'>Tryck på någon produkt för att redigera den.</p>";
+							echo "<ul class='list-group my-2'>";
 
-						foreach ($projectProductsArray as $product) {
-							echo "<button class='list-group-item list-group-item-action d-flex align-items-center rounded px-4 py-3 my-1 border shadow-sm' data-bs-toggle='modal' data-bs-target='#editProductModal' value='" . $product['product_id'] . "' onclick='selectProductData(this.value)'>"
-								. $product['name'] 
-								. " <span class='ms-3'>" 
-								. number_format($product['price'], 2, ',', ' ') 
-								. " €</span>
-							</button>";
+							foreach ($projectProductsArray as $product) {
+								echo "<button class='list-group-item list-group-item-action d-flex align-items-center rounded px-4 py-3 my-1 border shadow-sm' data-bs-toggle='modal' data-bs-target='#editProductModal' value='" . $product['product_id'] . "' onclick='selectProductData(this.value)'>"
+									. $product['name'] 
+									. " <span class='ms-3'>" 
+									. number_format($product['price'], 2, ',', ' ') 
+									. " €</span>
+								</button>";
+							}
+					
+							echo "</ul>";
 						}
-				
-						echo "</ul>";
 						?>
 						<button type="button" class="btn btn-success mt-2" data-bs-toggle="modal" data-bs-target="#newProductModal" onclick="selectProductData()">
 							Lägg till produkt

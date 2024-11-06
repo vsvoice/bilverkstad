@@ -1,7 +1,7 @@
 <?php
 include_once 'includes/header.php';
 
-
+$user->checkLoginStatus();
 ?>
 
 

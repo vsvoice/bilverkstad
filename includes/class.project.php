@@ -19,18 +19,17 @@ class Project {
         $stmt_insertNewProject->bindParam(':carId', $carId, PDO::PARAM_INT);
         $stmt_insertNewProject->bindParam(':defectDesc', $defectDesc, PDO::PARAM_STR);
         $stmt_insertNewProject->bindParam(':workDesc', $workDesc, PDO::PARAM_STR);
-        $stmt_insertNewProject->execute();
 
-        // Check if query returns any result
-        if($stmt_insertNewProject->rowCount() > 0) {
-            array_push($this->errorMessages, "Projektet finns redan ");
+        if(!$stmt_insertNewProject->execute()) {
+            array_push($this->errorMessages, "Lyckades inte skapa projektet ");
             $this->errorState = 1;
         }
 
         if ($this->errorState == 1) {
             return $this->errorMessages;
         } else {
-            return 1;    
+            $lastProjectId = $this->pdo->lastInsertId();
+            return $lastProjectId;    
         }
     }
 

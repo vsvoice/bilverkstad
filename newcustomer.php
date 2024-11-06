@@ -1,6 +1,8 @@
 <?php
 include_once 'includes/header.php';
 
+$user->checkLoginStatus();
+
 if (isset($_POST['new-customer-submit'])) {
     $feedbackMessages = $customer->insertNewCustomer(
 		$user->cleanInput($_POST['fname']), 

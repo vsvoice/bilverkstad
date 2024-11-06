@@ -21,10 +21,10 @@ if ($isBoss || $isAdmin) {
     $status_condition = [1, 2, 3, 4, 5, 6, 7];
 } elseif ($isAccountant) {
     // Accountants see projects with status 3, 4 and 5
-    $status_condition = [3, 4, 5];
+    $status_condition = [5, 6];
 } elseif ($isMechanic) {
     // Mechanics see projects with status 1, 2 and 3
-    $status_condition = [1, 2, 3];
+    $status_condition = [1, 2, 4, 5];
 }
 
 // Fetch projects from the database with joins based on the status condition
@@ -68,11 +68,11 @@ if (!empty($status_condition)) {
         $statuses = [
             1 => "I kö",
             2 => "Pågående",
-            3 => "Pausad",
-            4 => "Klar för Fakturering",
-            5 => "Fakturerad",
-            6 => "Betalad",
-            7 => "Avbokad"
+            3 => "Avbokat",
+            4 => "Pausat",
+            5 => "Klart för fakturering",
+            6 => "Fakturerat",
+            7 => "Betalt"
         ];
 
         foreach ($statuses as $status_id => $status_title): ?>
@@ -102,9 +102,9 @@ if (!empty($status_condition)) {
                                         <div>
                                             <p class="card-text mb-4 fs-5"><?php echo $project['car_brand'] . ' ' . $project['car_model']; ?></p>
                                         </div>
-                                            <div class="d-flex justify-content-between justify-content-md-start">
+                                            <div class="d-flex justify-content-between justify-content-md-start flex-wrap gap-2">
                                                 <p class="card-text mb-0 me-md-auto"><strong>Kund:</strong><br> <?php echo $project['customer_fname'] . ' ' . $project['customer_lname']; ?></p>
-                                                <p class="card-text mb-0 me-md-4"><strong>Bokades:</strong><br> <span style="color: <?php echo $dateColor; ?>"><?php echo date('d.m.Y', strtotime($project['creation_date'])); ?> </span></p>
+                                                <p class="card-text mb-0 me-md-4 mx-2"><strong>Bokades:</strong><br> <span style="color: <?php echo $dateColor; ?>"><?php echo date('d.m.Y', strtotime($project['creation_date'])); ?> </span></p>
                                                 <p class="card-text mb-0 ms-md-4"><strong>Senaste aktivitet:</strong><br> <?php if(!empty($project['most_recent_date'])) {echo date('d.m.Y', strtotime($project['most_recent_date']));} else { echo "Ingen aktivitet";}; ?></p>
                                             </div>
                                         </div>

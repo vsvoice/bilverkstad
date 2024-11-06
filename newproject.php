@@ -1,16 +1,30 @@
 <?php
 include_once 'includes/header.php';
 
+$user->checkLoginStatus();
+
 $customersArray = $customer->selectAllCustomers();
 $carsArray = $car->selectAllCars();
 
 if (isset($_POST['new-project-submit'])) {
-    $feedbackMessages = $project->insertNewProject(
+    $newProjectFeedback = $project->insertNewProject(
 		$_POST['project-car'], 
 		$_POST['project-customer'], 
 		$user->cleanInput($_POST['defect-desc']),
 		$user->cleanInput($_POST['work-desc'])
 	);
+	if(!is_array($newProjectFeedback)) {
+		header("Location: project.php?project_id=" . $newProjectFeedback . "&create-success=1");
+		exit();
+	} else {
+		echo "<div class='container'>";
+		foreach($newProjectFeedback as $message) {
+			echo "<div class='alert alert-danger text-center' role='alert'>";
+			echo 	$message;
+			echo "</div>";
+		}
+		echo "</div>";
+    }
 }
 
 /*if (isset($_GET['car']) && $_GET['car'] === 'getCarDataById') {
@@ -124,7 +138,7 @@ if (isset($_POST['new-project-submit'])) {
 		
 		// Check if the hidden value is empty
 		if (!projectCar || !projectCustomer) {
-			alert("Ange både bil och kund för projektet och försök igen.");
+			alert("Ange både bil och kund till projektet och försök igen.");
 			event.preventDefault(); // Prevent form submission
 		}
 	});

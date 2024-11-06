@@ -45,3 +45,9 @@ ul.list-group li:nth-child(even) {
     overflow-x: auto;
     overflow-y: auto;
 }
+
+.btn {
+    padding: 0.8em 1em !important;
+    font-weight: 600 !important;
+    
+}
