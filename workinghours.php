@@ -21,8 +21,9 @@ $totalWorkingHours = $user->getAllWorkingHours($date30DaysAgo, $currentDate);
 	<div class="mw-500 mx-auto">
 		<h1 class="my-5">Arbetstimmar</h1>
 
-			<div class="container">
+			<div class="card rounded-4 text-start shadow-sm px-3 py-4 mt-2">
 				<form>
+					
 					<div class="row">
 						<div class="col">
 							<label for="from-date" class="form-label">Från:</label>
@@ -34,7 +35,7 @@ $totalWorkingHours = $user->getAllWorkingHours($date30DaysAgo, $currentDate);
 						</div>
 					</div>
 				</form>
-			</div>
+			
 
 			<div class="container mt-5">
 				<div id="working-hours-headings" class="row border-bottom">
@@ -51,7 +52,7 @@ $totalWorkingHours = $user->getAllWorkingHours($date30DaysAgo, $currentDate);
 				</ul>
 				
 			</div>
-
+		</div>
 	</div>
 </div>
 
