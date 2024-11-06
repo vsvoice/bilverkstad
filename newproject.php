@@ -31,44 +31,46 @@ if (isset($_POST['new-project-submit'])) {
 		<h1 class="my-5">Nytt projekt</h1>
 
 		<form id="project-form" action="" method="post">
-			<h2 class="h4 mt-3">Bil *</h2>
+			<p class="fst-italic">* obligatoriska fält</p>
+			<div class="card rounded-4 text-start shadow-sm p-4 mb-4">
+				<h2 class="h4 mb-0">Bil *</h2>
 
-			<button type="button" class="btn btn-primary my-3" data-bs-toggle="modal" data-bs-target="#carModal">
-				Bläddra bland bilar
-			</button>
+				<button type="button" class="btn btn-primary my-3 me-auto" data-bs-toggle="modal" data-bs-target="#carModal">
+					Bläddra bland bilar
+				</button>
 
-			<input type="hidden" id="project-car" name="project-car" required="required">
+				<input type="hidden" id="project-car" name="project-car" required="required">
 
-			<div class="row">
-				<p class="h6" id="car-data"><span id="car-brand">Märke</span> <span id="car-model">Modell</span> <span class="ms-4" id="car-license">Registernummer</span></p>
+				<div id="car-data">
+					<span class="fst-italic">Ingen bil har valts</span>
+				</div>
 			</div>
 
+			<div class="card rounded-4 text-start shadow-sm p-4 mb-5">
+				<h2 class="h4 mb-0">Kund *</h2>
 
-			<h2 class="h4 mt-4">Kund *</h2>
+				<button type="button" class="btn btn-primary my-3 me-auto" data-bs-toggle="modal" data-bs-target="#customerModal">
+					Bläddra bland kunder
+				</button>
 
-			<button type="button" class="btn btn-primary my-3" data-bs-toggle="modal" data-bs-target="#customerModal">
-				Bläddra bland kunder
-			</button>
+				<input type="hidden" id="project-customer" name="project-customer" required="required">
 
-			<input type="hidden" id="project-customer" name="project-customer" required="required">
-
-			<div class="row">
-				<p class="h6" id="customer-data">Namn
-					<span class="ms-4">Telefonnummer</span>
-					<span class="ms-4">E-post</span>
-					<span class="ms-4">Adress Postnummer Ort</span>
-				</p>
+				<div id="customer-data">
+					<span class="fst-italic">Ingen kund har valts</span>
+				</div>
 			</div>
 
-			<h2 class="h4 mt-4 mb-2">Om projektet</h2>
+			<div class="card rounded-4 text-start shadow-sm p-4">
+				<h2 class="h4 mb-2">Om projektet</h2>
 
-			<label class="h5 my-3" for="defect-desc">Felbeskrivning *</label>
-			<textarea class="form-control" id="defect-desc" name="defect-desc" required="required"></textarea>
-			
-			<label class="h5 my-3" for="defect-desc">Arbetsbeskrivning</label>
-			<textarea class="form-control" id="work-desc" name="work-desc"></textarea>
+				<label class="h5 mt-4 mb-3" for="defect-desc">Felbeskrivning *</label>
+				<textarea class="form-control mb-2" id="defect-desc" name="defect-desc" rows="3" required="required"></textarea>
+				
+				<label class="h5 my-3" for="defect-desc">Arbetsbeskrivning</label>
+				<textarea class="form-control" id="work-desc" name="work-desc" rows="3"></textarea>
+			</div>
 
-			<input type="submit" class="btn btn-primary my-3" name="new-project-submit" value="Skapa nytt projekt">
+			<input type="submit" class="btn btn-primary mt-4" name="new-project-submit" value="Skapa nytt projekt">
 		</form>
 	</div>
 </div>
