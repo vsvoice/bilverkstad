@@ -20,19 +20,21 @@ include_once 'includes/header.php';
 
 			<p class="mt-4 mb-2 fst-italic">Tryck på valfri kund för att visa tillhörande projekt.</p>
 
-			<table class='table table-striped table-hover'>
-				<thead>
-					<tr>
-						<th scope='col'>Namn</th>
-						<th scope='col'>Telefon</th>
-						<th scope='col'>E-post</th>
-						<th scope='col'>Adress</th>
-					</tr>
-				</thead>
-				<tbody id="customer-field">
-				</tbody>
-			</table>
-
+			<div class="table-responsive">
+				<table class='table table-striped table-hover'>
+					<thead>
+						<tr>
+							<th scope='col'>Namn</th>
+							<th scope='col'>Telefon</th>
+							<th scope='col'>E-post</th>
+							<th scope='col'>Adress</th>
+						</tr>
+					</thead>
+					<tbody id="customer-field">
+					</tbody>
+				</table>
+				
+			</div>
 		</div>
 	</div>
 </div>

@@ -33,19 +33,20 @@ if (isset($_POST['search-users-submit']) && !empty($_POST['search'])) {
             </div>
 
             <p class="mt-4 mb-2 fst-italic">Tryck på valfri användare för att redigera dess uppgifter.</p>
-
-            <table class='table table-striped table-hover'>
-                <thead>
-                    <tr>
-                    <th scope='col'>Namn</th>
-                    <th scope='col'>Användarnamn</th>
-                    <th scope='col'>E-post</th>
-                    </tr>
-                </thead>
-                <tbody id="user-field">
-                </tbody>
-            </table>
+            <div class="table-responsive">
+                <table class='table table-striped table-hover'>
+                    <thead>
+                        <tr>
+                        <th scope='col'>Namn</th>
+                        <th scope='col'>Användarnamn</th>
+                        <th scope='col'>E-post</th>
+                        </tr>
+                    </thead>
+                    <tbody id="user-field">
+                    </tbody>
+                </table>
             
+            </div>
         </div>
     </div>
 </div>

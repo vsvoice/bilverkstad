@@ -19,19 +19,20 @@ include_once 'includes/header.php';
 			</div>
 
 			<p class="mt-4 mb-2 fst-italic">Tryck på valfri bil för att visa tillhörande projekt.</p>
+			<div class="table-responsive">
+				<table class='table table-striped table-hover'>
+					<thead>
+						<tr>
+							<th scope='col'>Märke</th>
+							<th scope='col'>Modell</th>
+							<th scope='col'>Registernummer</th>
+						</tr>
+					</thead>
+					<tbody id="car-field">
+					</tbody>
+				</table>
 
-			<table class='table table-striped table-hover'>
-				<thead>
-					<tr>
-						<th scope='col'>Märke</th>
-						<th scope='col'>Modell</th>
-						<th scope='col'>Registernummer</th>
-					</tr>
-				</thead>
-				<tbody id="car-field">
-				</tbody>
-			</table>
-
+			</div>
 		</div>
 	</div>
 </div>
