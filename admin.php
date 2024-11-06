@@ -20,31 +20,33 @@ if (isset($_POST['search-users-submit']) && !empty($_POST['search'])) {
 
         <a class="btn btn-primary mb-2" href="newuser.php">Skapa ny användare</a>
 
-        <div class="mt-3">
-            <label for="search" class="form-label">Sök bland användare (namn, användarnamn eller e-post)</label><br>
-            <input class="form-control mb-2" type="text" name="search" id="search" onkeyup="searchUsers(this.value)">
-            <div class="form-check">
-                <input class="form-check-input" type="checkbox" id="include-inactive" name="include-inactive" onchange="searchUsers(this.value)">
-                <label class="form-check-label" for="include-inactive">
-                    Inkludera inaktiva användare
-                </label>
+        <div class="card rounded-4 text-start shadow-sm px-3 py-4 mt-2">
+            <div class="mb-3">
+                <label for="search" class="form-label">Sök bland användare (namn, användarnamn eller e-post)</label><br>
+                <input class="form-control mb-2" type="text" name="search" id="search" onkeyup="searchUsers(this.value)">
+                <div class="form-check">
+                    <input class="form-check-input" type="checkbox" id="include-inactive" name="include-inactive" onchange="searchUsers(this.value)">
+                    <label class="form-check-label" for="include-inactive">
+                        Inkludera inaktiva användare
+                    </label>
+                </div>
             </div>
+
+            <p class="mt-4 mb-2 fst-italic">Tryck på valfri användare för att redigera dess uppgifter.</p>
+
+            <table class='table table-striped table-hover'>
+                <thead>
+                    <tr>
+                    <th scope='col'>Namn</th>
+                    <th scope='col'>Användarnamn</th>
+                    <th scope='col'>E-post</th>
+                    </tr>
+                </thead>
+                <tbody id="user-field">
+                </tbody>
+            </table>
+            
         </div>
-
-        <p class="mt-5 mb-2 fst-italic">Tryck på valfri användare för att redigera dess uppgifter.</p>
-
-        <table class='table table-striped table-hover'>
-            <thead>
-                <tr>
-                <th scope='col'>Namn</th>
-                <th scope='col'>Användarnamn</th>
-                <th scope='col'>E-post</th>
-                </tr>
-            </thead>
-            <tbody id="user-field">
-            </tbody>
-        </table>
-        
     </div>
 </div>
 

@@ -12,23 +12,27 @@ include_once 'includes/header.php';
 
 		<a class="btn btn-primary mb-2" href="newcar.php" role="button">Ny bil</a>
 
-		<div class="mt-3">
-			<label for="search" class="form-label" class="h5">Sök bland bilar (märke, modell, registernummer)</label>
-			<input class="form-control" type="text" name="search" id="search" onkeyup="searchCars(this.value)"><br>
+		<div class="card rounded-4 text-start shadow-sm px-3 py-4 mt-2">
+			<div class="mb-3">
+				<label for="search" class="form-label" class="h5">Sök bland bilar (märke, modell, registernummer)</label>
+				<input class="form-control" type="text" name="search" id="search" onkeyup="searchCars(this.value)">
+			</div>
+
+			<p class="mt-4 mb-2 fst-italic">Tryck på valfri bil för att visa tillhörande projekt.</p>
+
+			<table class='table table-striped table-hover'>
+				<thead>
+					<tr>
+						<th scope='col'>Märke</th>
+						<th scope='col'>Modell</th>
+						<th scope='col'>Registernummer</th>
+					</tr>
+				</thead>
+				<tbody id="car-field">
+				</tbody>
+			</table>
+
 		</div>
-
-		<table class='table table-striped table-hover'>
-			<thead>
-				<tr>
-					<th scope='col'>Märke</th>
-					<th scope='col'>Modell</th>
-					<th scope='col'>Registernummer</th>
-				</tr>
-			</thead>
-			<tbody id="car-field">
-			</tbody>
-		</table>
-
 	</div>
 </div>
 

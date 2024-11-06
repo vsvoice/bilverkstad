@@ -12,24 +12,28 @@ include_once 'includes/header.php';
 
 		<a class="btn btn-primary mb-2" href="newcustomer.php" role="button">Ny kund</a>
 
-		<div class="mt-3">
-			<label for="search" class="form-label" class="h5">Sök bland kunder (namn, telefonnummer, e-post, address)</label>
-			<input class="form-control" type="text" name="search" id="search" onkeyup="searchCustomers(this.value)"><br>
+		<div class="card rounded-4 text-start shadow-sm px-3 py-4 mt-2">
+			<div class="mb-3">
+				<label for="search" class="form-label" class="h5">Sök bland kunder (namn, telefonnummer, e-post, address)</label>
+				<input class="form-control" type="text" name="search" id="search" onkeyup="searchCustomers(this.value)">
+			</div>
+
+			<p class="mt-4 mb-2 fst-italic">Tryck på valfri kund för att visa tillhörande projekt.</p>
+
+			<table class='table table-striped table-hover'>
+				<thead>
+					<tr>
+						<th scope='col'>Namn</th>
+						<th scope='col'>Telefon</th>
+						<th scope='col'>E-post</th>
+						<th scope='col'>Adress</th>
+					</tr>
+				</thead>
+				<tbody id="customer-field">
+				</tbody>
+			</table>
+
 		</div>
-
-		<table class='table table-striped table-hover'>
-			<thead>
-				<tr>
-					<th scope='col'>Namn</th>
-					<th scope='col'>Telefon</th>
-					<th scope='col'>E-post</th>
-					<th scope='col'>Adress</th>
-				</tr>
-			</thead>
-			<tbody id="customer-field">
-			</tbody>
-		</table>
-
 	</div>
 </div>
 
