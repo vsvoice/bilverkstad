@@ -37,19 +37,19 @@ if (isset($_POST['new-car-submit'])) {
 <div class="container">
 
 	<div class="mw-500 mx-auto">
-		<h1 class="my-5"></h1>
+		<h1 class="my-5">Ny bil</h1>
 
 		<form action="" method="post">
+			<div class="card rounded-4 text-start shadow-sm p-4 mt-2 mb-4">
+				<label for="brand" class="form-label">Märke *</label><br>
+				<input class="form-control mb-3" type="text" name="brand" id="brand" value="" required="required"><br>
 
-			<label for="brand" class="form-label">Märke</label><br>
-			<input class="form-control" type="text" name="brand" id="brand" value="" required="required"><br>
+				<label for="model" class="form-label">Modell *</label><br>
+				<input class="form-control mb-3" type="text" name="model" id="model" value="" required="required"><br>
 
-			<label for="model" class="form-label">Modell</label><br>
-			<input class="form-control" type="text" name="model" id="model" value="" required="required"><br>
-
-			<label for="license" class="form-label">Registernummer</label><br>
-			<input class="form-control" type="text" name="license" id="license" value="" required="required"><br>
-
+				<label for="license" class="form-label">Registernummer *</label><br>
+				<input class="form-control mb-3" type="text" name="license" id="license" value="" required="required"><br>
+			</div>
 
 			<input type="submit" class="btn btn-primary" name="new-car-submit" value="Skapa ny bil">
 			
