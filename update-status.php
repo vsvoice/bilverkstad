@@ -1,7 +1,11 @@
 <?php
 include_once 'includes/header.php';
 
-$user->checkLoginStatus();
+if ($user->checkLoginStatus()) {
+    if(!$user->checkUserRole(200)) {
+        header("Location: home.php");
+    }
+}
 
 if (isset($_POST['project_id']) && isset($_POST['status_id'])) {
     $projectId = $_POST['project_id'];

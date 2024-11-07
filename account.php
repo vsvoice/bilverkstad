@@ -4,7 +4,11 @@ include_once 'includes/header.php';
 
 $user->checkLoginStatus();
 
-$test = $user->checkUserRole(10);
+if ($user->checkLoginStatus()) {
+    if(!$user->checkUserRole(200)) {
+        header("Location: home.php");
+    }
+}
 
 // var_dump($test);
 

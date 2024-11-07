@@ -13,6 +13,19 @@ class Car {
 
     public function insertNewCar(string $brand, string $model, string $license) {
 
+        // Check if car_license already exists in the database
+        $stmt_checkLicense = $this->pdo->prepare('SELECT COUNT(*) FROM table_cars WHERE car_license = :license');
+        $stmt_checkLicense->bindParam(':license', $license, PDO::PARAM_STR);
+        $stmt_checkLicense->execute();
+
+        if ($stmt_checkLicense->fetchColumn() > 0) {
+            // License already exists, return error message
+            array_push($this->errorMessages, "Bilens registernummer finns redan ");
+            $this->errorState = 1;
+            return $this->errorMessages;
+        }
+        
+        // If no existing license, proceed to insert new car
         $stmt_insertNewCar = $this->pdo->prepare('INSERT INTO table_cars (car_brand, car_model, car_license)
             VALUES 
             (:brand, :model, :license)');
@@ -26,11 +39,10 @@ class Car {
             }
 
             // Check if query returns any result
-            /*
             if($stmt_insertNewCar->rowCount() > 0) {
                 array_push($this->errorMessages, "Bilen finns redan ");
                 $this->errorState = 1;
-            }*/
+            }
 
             if ($this->errorState == 1) {
                 return $this->errorMessages;
@@ -46,7 +58,7 @@ class Car {
 
     public function populateCarField($carsArray) {
 
-        echo "<div class='list-group list-group-flush'>";
+        echo "<div class='list-group list-group-flush table-responsive'>";
 
         foreach ($carsArray as $car) {
 			echo "<button type='button' class='list-group-item list-group-item-action px-4' aria-current='true' data-bs-dismiss='modal' value='{$car['car_id']}' onclick='selectProjectCar(this.value)'>

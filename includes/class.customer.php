@@ -51,7 +51,7 @@ class Customer {
 
     public function populateCustomerField($customersArray) {
 
-        echo "<div class='list-group list-group-flush'>";
+        echo "<div class='list-group list-group-flush table-responsive'>";
 
         foreach ($customersArray as $customer) {
 			echo "<button type='button' class='list-group-item list-group-item-action px-4' aria-current='true' data-bs-dismiss='modal' value='{$customer['customer_id']}' onclick='selectProjectCustomer(this.value)'>

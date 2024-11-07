@@ -132,6 +132,12 @@ class User {
         $userData = $stmt_checkUsername->fetch();
 
         if(password_verify($upass, $userData['u_password'])) {
+
+            if ($userData['u_status'] === 0) {
+                array_push($this->errorMessages, "Detta konto har inaktiverats! Kontakta administratören och be om hjälp ");
+                return $this->errorMessages;
+            }
+
             $_SESSION['user_id'] = $userData['u_id'];
             $_SESSION['user_name'] = $userData['u_name'];
             $_SESSION['user_email'] = $userData['u_email'];
