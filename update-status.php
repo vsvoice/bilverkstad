@@ -24,13 +24,24 @@ if (isset($_POST['project_id']) && isset($_POST['status_id'])) {
             exit;
         } else {
             // Error updating status
-            echo "Failed to update status. Please try again.";
+            echo "<div class='container'>
+                    <div class='alert alert-danger text-center' role='alert'>
+                        Lyckades inte uppdatera status. Försök igen.
+                    </div>
+                </div>";
         }
     } else {
-        echo "Database connection is not available.";
+        echo "<div class='container'>
+                <div class='alert alert-danger text-center' role='alert'>
+                    Databasanslutning är inte tillgänglig.
+                </div>
+            </div>";
     }
 } else {
-    echo "Invalid request.";
+    echo "<div class='container'>
+            <div class='alert alert-danger text-center' role='alert'>
+                Inte giltig förfrågan.
+            </div>
+        </div>";
 }
-?>
 ?>
