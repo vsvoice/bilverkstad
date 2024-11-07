@@ -84,7 +84,7 @@ $adminMenuLinks = array(
 		<ul class="navbar-nav">
 			<?php
 			if(isset($_SESSION['user_id'])) {
-				if ($user->checkUserRole(10) && !$user->checkUserRole(50)) {
+				if ($user->checkUserRole(10) && !$user->checkUserRole(50) || $user->checkUserRole(200)) {
 					foreach ($menuLinks as $menuItem) {
 						echo "<li class='nav-item'>
 						<a class='nav-link' href='{$menuItem['url']}'>{$menuItem['title']}</a>
