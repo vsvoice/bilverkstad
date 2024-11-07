@@ -13,23 +13,23 @@ $roleArray = $pdo->query("SELECT * FROM table_roles")->fetchAll();
 if (isset($_POST['admin-edit-user-submit'])) {
     $uStatus = isset($_POST['is-disabled']) ? 0 : 1;
     $feedback = $user->checkUserRegisterInput(
-        $_POST['uname'], 
-        $_POST['umail'], 
-        $_POST['upassnew'], 
-        $_POST['upassrepeat'], 
-        $_GET['uid'] // Pass the user ID here
+        cleanInput($_POST['uname']), 
+        cleanInput($_POST['umail']), 
+        cleanInput($_POST['upassnew']), 
+        cleanInput($_POST['upassrepeat']), 
+        cleanInput($_GET['uid']) // Pass the user ID here
     );
 
     if ($feedback === 1) {
         $editFeedback = $user->editUserInfo(
-            $_POST['umail'], 
-            $_POST['upassold'], 
-            $_POST['upassnew'], 
-            $_GET['uid'], 
-            $_POST['urole'], 
-            $_POST['ufname'], 
-            $_POST['ulname'], 
-            $uStatus
+            cleanInput($_POST['umail']), 
+            cleanInput($_POST['upassold']), 
+            cleanInput($_POST['upassnew']), 
+            cleanInput($_GET['uid']), 
+            cleanInput($_POST['urole']), 
+            cleanInput($_POST['ufname']), 
+            cleanInput($_POST['ulname']), 
+            cleanInput($uStatus)
         );
         if ($editFeedback === 1) {
             echo "<div class='container'>

@@ -8,10 +8,21 @@ if ($user->checkLoginStatus()) {
 }
 
 if(isset($_POST['register-submit'])) {
-	$feedbackMessages = $user->checkUserRegisterInput($_POST['uname'], $_POST['umail'], $_POST['upass'], $_POST['upassrepeat']);
+	$feedbackMessages = $user->checkUserRegisterInput(
+		cleanInput($_POST['uname']), 
+		cleanInput($_POST['umail']), 
+		cleanInput($_POST['upass']), 
+		cleanInput($_POST['upassrepeat'])
+	);
 
     if($feedbackMessages === 1) {
-        $signUpFeedback = $user->register($_POST['uname'], $_POST['umail'], $_POST['upass'], $_POST['ufname'], $_POST['ulname']);
+        $signUpFeedback = $user->register(
+			cleanInput($_POST['uname']), 
+			cleanInput($_POST['umail']), 
+			cleanInput($_POST['upass']), 
+			cleanInput($_POST['ufname']), 
+			cleanInput($_POST['ulname'])
+		);
 		if($signUpFeedback === 1) {
 			echo "<div class='container'>
 					<div class='alert alert-success text-center' role='alert'>

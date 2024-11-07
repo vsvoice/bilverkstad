@@ -1,4 +1,5 @@
 <?php
+include_once 'functions.php';
 
 class User {
 
@@ -259,6 +260,8 @@ class User {
     
 
     public function searchUsers(string $input, int $includeInactive) {
+        $input = cleanInput($input);
+
         // Replace all whitespace characters with % wildcards
         $input = preg_replace('/\s+/', '%', $input);
 

@@ -1,4 +1,5 @@
 <?php
+include_once 'functions.php';
 
 class Customer {
 
@@ -68,6 +69,8 @@ class Customer {
     }
 
     public function searchCustomers(string $input) {
+        $input = cleanInput($input);
+
         // Replace all whitespace characters with % wildcards
         $input = preg_replace('/\s+/', '%', $input);
 
