@@ -19,7 +19,7 @@ $user->checkLoginStatus();
 
 		<div class="card rounded-4 text-start shadow-sm px-3 py-4 mt-2">
 			<div class="mb-3">
-				<label for="search" class="form-label" class="h5">Sök bland kunder (namn, telefonnummer, e-post, address)</label>
+				<label for="search" class="form-label" class="h5">Sök bland kunder (namn, telefonnummer, e-post eller address)</label>
 				<input class="form-control" type="text" name="search" id="search" onkeyup="searchCustomers(this.value)">
 			</div>
 

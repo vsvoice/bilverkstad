@@ -66,8 +66,8 @@ if (!empty($status_condition)) {
         <!-- Array of project statuses -->
         <?php   
         $statuses = [
-            1 => "I kö",
             2 => "Pågående",
+            1 => "I kö",
             3 => "Avbokat",
             4 => "Pausat",
             5 => "Klart för fakturering",

@@ -138,8 +138,8 @@ if (isset($_POST['work-hours-submit'])) {
 
 	<div class="mw-500 mx-auto">
 		<a class="btn btn-secondary mb-5" href="home.php">Till startsidan</a><br>
-		<a class="btn btn-primary mb-2" href="editproject.php?project_id=<?php echo $projectId ?>">Redigera projektet</a>
-		<div class="card rounded-4 text-start shadow-sm p-4 my-3">
+		<a class="btn btn-primary mb-3" href="editproject.php?project_id=<?php echo $projectId ?>">Redigera projektet</a>
+		<div class="card rounded-4 text-start shadow-sm p-4 mb-3">
 			<h2 class="h4">Bil</h2>
 			<div class="row">
 				<p class="h6 lh-base mb-0" id="car-data">

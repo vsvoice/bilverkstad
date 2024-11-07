@@ -18,7 +18,7 @@ $user->checkLoginStatus();
 		?>
 		<div class="card rounded-4 text-start shadow-sm px-3 py-4 mt-2">
 			<div class="mb-3">
-				<label for="search" class="form-label" class="h5">Sök bland bilar (märke, modell, registernummer)</label>
+				<label for="search" class="form-label" class="h5">Sök bland bilar (märke, modell eller registernummer)</label>
 				<input class="form-control" type="text" name="search" id="search" onkeyup="searchCars(this.value)">
 			</div>
 
