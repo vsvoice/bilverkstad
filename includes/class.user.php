@@ -22,7 +22,7 @@ class User {
         return $data;
     }
 
-    public function checkUserRegisterInput($uname, $umail, $upass, $upassrepeat, $uid = null) {
+    public function checkUserRegisterInput(string $uname, string $umail, string $upass, string $upassrepeat, int $uid = null) {
         // START Check if user-entered username or email exists in the database
         if (isset($_POST['register-submit'])) {
             $this->errorState = 0;
@@ -89,7 +89,7 @@ class User {
     
 
 
-    public function register($uname, $umail, $upass, $fname, $lname) {
+    public function register(string $uname, string $umail, string $upass, string $fname, string $lname) {
         $hashedPassword = password_hash($upass, PASSWORD_DEFAULT);
         $uname = $this->cleanInput($uname);
         $fname = $this->cleanInput($fname);
@@ -115,7 +115,7 @@ class User {
 
     }
 
-    public function login($unamemail, $upass) {
+    public function login(string $unamemail, string $upass) {
         
         $stmt_checkUsername = $this->pdo->prepare('SELECT * FROM table_users WHERE u_name = :uname OR u_email = :email');
         $stmt_checkUsername->bindParam(':uname', $unamemail, PDO::PARAM_STR);
@@ -162,7 +162,7 @@ class User {
 
 
 
-    public function checkUserRole($requiredValue) {
+    public function checkUserRole(int $requiredValue) {
         /*$stmt_checkUserRole = $this->pdo->prepare(
         'SELECT u_role_fk, r_level
         FROM table_users
@@ -186,7 +186,7 @@ class User {
 
     }
 
-    public function editUserInfo($umail, $upassold, $upassnew, $uid, $role, $ufname, $ulname, $status) {
+    public function editUserInfo(string $umail, string $upassold, string $upassnew, int $uid, int $role, string $ufname, string $ulname, int $status) {
         // Clean and validate first name
         $cleanedFname = $this->cleanInput($ufname);
         if (empty($cleanedFname) || !preg_match("/^[a-zA-Z\s]+$/", $cleanedFname)) {
@@ -287,7 +287,7 @@ class User {
         return $usersList;
     }
 
-    public function populateUserField($usersArray) {
+    public function populateUserField(array $usersArray) {
         foreach ($usersArray as $user) {
             echo "
             <tr " . ($user['u_status'] === 0 ? "class='table-danger'" : "") . " onclick=\"window.location.href='admin-account.php?uid={$user['u_id']}';\" style=\"cursor: pointer;\">
@@ -298,7 +298,7 @@ class User {
         }
     }
 
-    public function getUserInfo($uid) {
+    public function getUserInfo(int $uid) {
         $stmt_selectUserData = $this->pdo->prepare('SELECT * FROM table_users WHERE u_id = :uid');
         $stmt_selectUserData->bindParam(':uid', $uid, PDO::PARAM_INT);
         $stmt_selectUserData->execute();
@@ -312,7 +312,7 @@ class User {
         header("Location: index.php");
     }
 
-    public function deleteUser($uid) {
+    public function deleteUser(int $uid) {
         $stmt_deleteUser = $this->pdo->prepare('DELETE FROM table_users WHERE u_id = :uid');
         $stmt_deleteUser->bindParam(':uid', $uid, PDO::PARAM_INT);
 
@@ -346,7 +346,7 @@ class User {
         return $workingHours;
     }
 
-    public function populateWorkingHoursField($hoursArray) {
+    public function populateWorkingHoursField(array $hoursArray) {
         foreach ($hoursArray as $user) {
             echo "<div class='row list-group-item d-flex py-3'>
                     <div class='col'>

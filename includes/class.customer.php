@@ -49,7 +49,7 @@ class Customer {
         return $allCustomersArray;
     }
 
-    public function populateCustomerField($customersArray) {
+    public function populateCustomerField(array $customersArray) {
 
         echo "<div class='list-group list-group-flush table-responsive'>";
 
@@ -89,7 +89,7 @@ class Customer {
         return $customersList;
     }
 
-    public function populateCustomerSearchField($customersArray) {
+    public function populateCustomerSearchField(array $customersArray) {
         foreach ($customersArray as $customer) {
             echo "
             <tr data-bs-toggle='modal' data-bs-target='#customerModal' data-id='{$customer['customer_id']}' onclick=\"selectCustomerProjects(this.getAttribute('data-id'))\">
@@ -101,7 +101,7 @@ class Customer {
         }
     }
 
-    public function selectCustomerProjects($customerId) {
+    public function selectCustomerProjects(int $customerId) {
         $stmt_selectCustomerProjects = $this->pdo->prepare('SELECT *,
                 c.*,
                 s.s_name
@@ -119,7 +119,7 @@ class Customer {
         return $customerProjects;
     }
 
-    public function populateCustomerProjectsField($customerProjectsArray) {
+    public function populateCustomerProjectsField(array $customerProjectsArray) {
         if (empty($customerProjectsArray)){
              echo "<tr class='text-center fst-italic'><td colspan='2'>Inga projekt hittades för denna kund ...</td></tr>";
         }

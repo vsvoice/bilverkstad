@@ -56,7 +56,7 @@ class Car {
         return $allCarsArray;
     }
 
-    public function populateCarField($carsArray) {
+    public function populateCarField(array $carsArray) {
 
         echo "<div class='list-group list-group-flush table-responsive'>";
 
@@ -72,14 +72,14 @@ class Car {
         echo "</div>";
     }
 
-    public function getCarDataById($id) {
+    public function getCarDataById(int $id) {
         // Prepare and execute the query to fetch user data by ID
         $carData = $this->pdo->query("SELECT * FROM table_cars WHERE car_id = $id")->fetch();
         
         echo "<span id='car-brand'>{$carData['car_brand']}</span> <span id='car-model'>{$carData['car_model']}</span> <span class='ms-4' id='car-license'>{$carData['car_license']}</span>";
     }
 
-    public function searchCars($input) {
+    public function searchCars(string $input) {
         // Replace all whitespace characters with % wildcards
         $input = preg_replace('/\s+/', '%', $input);
 
@@ -96,7 +96,7 @@ class Car {
         return $carsList;
     }
 
-    public function populateCarSearchField($carsArray) {
+    public function populateCarSearchField(array $carsArray) {
         foreach ($carsArray as $car) {
             echo "
             <tr data-bs-toggle='modal' data-bs-target='#carModal' data-id='{$car['car_id']}' onclick=\"selectCarProjects(this.getAttribute('data-id'))\">
@@ -107,7 +107,7 @@ class Car {
         }
     }
 
-    public function selectCarProjects($carId) {
+    public function selectCarProjects(int $carId) {
         $stmt_selectCarProjects = $this->pdo->prepare('SELECT *,
                 c.*,
                 s.s_name
@@ -125,7 +125,7 @@ class Car {
         return $carProjects;
     }
 
-    public function populateCarProjectsField($carProjectsArray) {
+    public function populateCarProjectsField(array $carProjectsArray) {
         if (empty($carProjectsArray)){
              echo "<tr class='text-center fst-italic'><td colspan='2'>Inga projekt hittades för denna bil ...</td></tr>";
         }
