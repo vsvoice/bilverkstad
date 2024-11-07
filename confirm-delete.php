@@ -18,16 +18,16 @@ if (isset($_POST['delete-user-submit'])) {
 
 <?php
 if (!isset($deleteFeedback)) {
-    echo "<h2 class='mb-5'>Är du säker på att du vill radera Användare <span class='fw-bold'>{$userInfoArray['u_name']}</span>?</h2>";
+    echo "<h2 class='mb-5'>Är du säker på att du vill radera användaren <span class='fw-bold'>{$userInfoArray['u_name']}</span>?</h2>";
 
     echo "
     <div class='row flex-column justify-content-center'>
         <div class='col-4 mb-3 mx-auto'>
-            <a class='btn btn-warning w-100' href='admin-account.php?uid={$_GET['uid']}'>Nej, För mig tillbaks!</a>
+            <a class='btn btn-warning w-100' href='admin-account.php?uid={$_GET['uid']}'>Nej, för mig tillbaks!</a>
         </div>
         <div class='col-4 mx-auto'>
             <form action='' method='post'>
-                <input type='submit' name='delete-user-submit' value='Radera Användare' class='btn btn-danger w-100'>
+                <input type='submit' name='delete-user-submit' value='Radera användare' class='btn btn-danger w-100'>
             </form>
         </div>
     </div>";
