@@ -1,7 +1,12 @@
 <?php
 include_once 'includes/header.php';
 
-$user->checkLoginStatus();
+if ($user->checkLoginStatus()) {
+	// Prevent accountants from accessing page
+    if($user->checkUserRole(50) && !$user->checkUserRole(200)) {
+        header("Location: home.php");
+    }
+}
 
 $customersArray = $customer->selectAllCustomers();
 $carsArray = $car->selectAllCars();

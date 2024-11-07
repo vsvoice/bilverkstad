@@ -32,6 +32,20 @@ $menuLinks = array(
         "url" => "cars.php"
 	)
 );
+$accountantMenuLinks = array(
+    array(
+        "title" => "Startsida",
+        "url" => "home.php"
+	),
+	array(
+        "title" => "Kunder",
+        "url" => "customers.php"
+	),
+	array(
+        "title" => "Bilar",
+        "url" => "cars.php"
+	)
+);
 $adminMenuLinks = array(
     array(
         "title" => "Administratör",
@@ -70,10 +84,18 @@ $adminMenuLinks = array(
 		<ul class="navbar-nav">
 			<?php
 			if(isset($_SESSION['user_id'])) {
-				foreach ($menuLinks as $menuItem) {
-					echo "<li class='nav-item'>
-					<a class='nav-link' href='{$menuItem['url']}'>{$menuItem['title']}</a>
-					</li>";
+				if ($user->checkUserRole(10) && !$user->checkUserRole(50)) {
+					foreach ($menuLinks as $menuItem) {
+						echo "<li class='nav-item'>
+						<a class='nav-link' href='{$menuItem['url']}'>{$menuItem['title']}</a>
+						</li>";
+					}
+				} else if ($user->checkUserRole(50) && !$user->checkUserRole(200)) {
+					foreach ($accountantMenuLinks as $menuItem) {
+						echo "<li class='nav-item'>
+						<a class='nav-link' href='{$menuItem['url']}'>{$menuItem['title']}</a>
+						</li>";
+					}
 				}
 			}
 			

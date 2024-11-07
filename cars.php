@@ -9,9 +9,13 @@ $user->checkLoginStatus();
 	<div class="mw-500 mx-auto">
 		
 		<h1 class="my-5">Bilar</h1>
-
-		<a class="btn btn-primary mb-2" href="newcar.php" role="button">Ny bil</a>
-
+		
+		<?php
+			// Prevent accountants from seeing the button
+			if(!$user->checkUserRole(50) || $user->checkUserRole(200)) {
+				echo '<a class="btn btn-primary mb-2" href="newcar.php" role="button">Ny bil</a>';
+			}
+		?>
 		<div class="card rounded-4 text-start shadow-sm px-3 py-4 mt-2">
 			<div class="mb-3">
 				<label for="search" class="form-label" class="h5">Sök bland bilar (märke, modell, registernummer)</label>

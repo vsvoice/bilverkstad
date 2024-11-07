@@ -10,7 +10,12 @@ $user->checkLoginStatus();
 		
 		<h1 class="my-5">Kunder</h1>
 
-		<a class="btn btn-primary mb-2" href="newcustomer.php" role="button">Ny kund</a>
+		<?php
+			// Prevent accountants from seeing the button
+			if(!$user->checkUserRole(50) || $user->checkUserRole(200)) {
+				echo '<a class="btn btn-primary mb-2" href="newcustomer.php" role="button">Ny kund</a>';
+			}
+		?>
 
 		<div class="card rounded-4 text-start shadow-sm px-3 py-4 mt-2">
 			<div class="mb-3">
