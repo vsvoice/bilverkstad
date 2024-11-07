@@ -24,7 +24,7 @@ $totalWorkingHours = $user->getAllWorkingHours($date30DaysAgo, $currentDate);
 			<div class="card rounded-4 text-start shadow-sm px-3 py-4 mt-2">
 				<form>
 					
-					<div class="row">
+					<div class="row gap-3">
 						<div class="col">
 							<label for="from-date" class="form-label">Från:</label>
 							<input type="date" id="from-date" name="from-date" class="form-control" value="<?php echo $date30DaysAgo ?>">

@@ -46,7 +46,7 @@ class Car {
 
     public function populateCarField($carsArray) {
 
-        echo "<div class='list-group list-group-flush'>";
+        echo "<div class='list-group list-group-flush table-responsive'>";
 
         foreach ($carsArray as $car) {
 			echo "<button type='button' class='list-group-item list-group-item-action px-4' aria-current='true' data-bs-dismiss='modal' value='{$car['car_id']}' onclick='selectProjectCar(this.value)'>

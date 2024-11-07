@@ -27,7 +27,7 @@ if (isset($_POST['search-users-submit']) && !empty($_POST['search'])) {
                 <div class="form-check">
                     <input class="form-check-input" type="checkbox" id="include-inactive" name="include-inactive" onchange="searchUsers(this.value)">
                     <label class="form-check-label" for="include-inactive">
-                        Inkludera inaktiva användare
+                        Inkludera inaktiverade användare
                     </label>
                 </div>
             </div>
