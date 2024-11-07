@@ -59,11 +59,11 @@ if (isset($_POST['admin-edit-user-submit'])) {
 
 ?>
 
-<div class="container d-flex align-items-center justify-content-center min-vh-100">
-    <div class="col-md-6">
-        <h1 class="text-center mb-4">Redigera användare</h1>
+<div class="container min-vh-100">
+    <div class="mw-500 mx-auto">
+        <h1 class="mb-5">Redigera användare</h1>
 
-        <form action="" method="post" class="bg-light p-4 rounded shadow-sm">
+        <form action="" method="post" class="border p-4 rounded shadow-sm">
 
             <div class="mb-3">
                 <label for="ufname" class="form-label">Förnamn</label>
@@ -115,7 +115,7 @@ if (isset($_POST['admin-edit-user-submit'])) {
             </div>
 
             <div class="d-grid">
-                <input type="submit" class="btn btn-primary" name="admin-edit-user-submit" value="Uppdatera">
+                <input type="submit" class="btn btn-primary mt-3 me-auto" name="admin-edit-user-submit" value="Uppdatera">
             </div>
             
         </form>

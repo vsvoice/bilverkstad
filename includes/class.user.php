@@ -317,9 +317,9 @@ class User {
         $stmt_deleteUser->bindParam(':uid', $uid, PDO::PARAM_INT);
 
         if($stmt_deleteUser->execute()) {
-            return "User deleted successfully";
+            return "Användaren har raderats";
         } else {
-            return "Something went wrong... Please try again or contact support.";
+            return "Något gick snett ... Försök igen.";
         }
     }
 

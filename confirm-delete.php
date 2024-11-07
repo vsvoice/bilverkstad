@@ -37,7 +37,7 @@ if (!isset($deleteFeedback)) {
     echo " 
     <div class='row flex-column justify-content-center'>
         <div class='col-4 mb-3 mx-auto'>
-            <a class='btn btn-secondary w-100' href='admin.php'>Return to Admin Page</a>
+            <a class='btn btn-secondary w-100' href='admin.php'>Återgå till sidan Administratör</a>
         </div>
     </div>";
 }
