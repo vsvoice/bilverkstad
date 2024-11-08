@@ -226,23 +226,32 @@ class User {
         // Update fields
         $hashedPassword = password_hash($upassnew, PASSWORD_DEFAULT);
         
+        // Update password if new password field isn't empty
+        if (!empty($upassnew)) {
+            $updatePassword = "u_password = :upassnew, ";
+        } else {
+            $updatePassword = "";
+        }
         // Only set u_email if it has changed
         $updateEmail = $umail !== $userDetails['u_email'] ? ", u_email = :umail" : "";
     
         // Update in the database 
         $stmt_editUserInfo = $this->pdo->prepare("
             UPDATE table_users
-            SET u_password = :upassnew, u_role_fk = :role, u_status = :status, u_fname = :ufname, u_lname = :ulname 
+            SET $updatePassword u_role_fk = :role, u_status = :status, u_fname = :ufname, u_lname = :ulname 
             $updateEmail
             WHERE u_id = :uid
         ");
         
         // Bind parameters
+        if (!empty($upassnew)) {
+            $stmt_editUserInfo->bindParam(':upassnew', $hashedPassword, PDO::PARAM_STR);
+        }
+
         if ($updateEmail) {
             $stmt_editUserInfo->bindParam(':umail', $umail, PDO::PARAM_STR);
         }
         
-        $stmt_editUserInfo->bindParam(':upassnew', $hashedPassword, PDO::PARAM_STR);
         $stmt_editUserInfo->bindParam(':role', $role, PDO::PARAM_INT);
         $stmt_editUserInfo->bindParam(':status', $status, PDO::PARAM_INT);
         $stmt_editUserInfo->bindParam(':ufname', $cleanedFname, PDO::PARAM_STR); // Use cleaned name

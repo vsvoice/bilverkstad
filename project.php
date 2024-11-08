@@ -172,7 +172,27 @@ if (isset($_POST['work-hours-submit'])) {
 				<select class="form-select mb-3" id="status_id" name="status_id" aria-label="Project Status" onchange="this.form.submit()">
 					<?php
 						foreach ($statusesData as $status) {
-							echo "<option value='" . $status['s_id'] . "' " . ($projectDataArray['status_id_fk'] == $status['s_id'] ? 'selected' : '') . ">" . $status['s_name'] . "</option>";
+							if ($user->checkUserRole(10) && !$user->checkUserRole(50)) 
+							{
+								if ($status['s_id'] == 6 || $status['s_id'] == 7) 
+								{
+									echo "<option class='d-none' value='" . $status['s_id'] . "' " . ($projectDataArray['status_id_fk'] == $status['s_id'] ? 'selected' : '') . ">" . $status['s_name'] . "</option>";
+								} else {
+									echo "<option value='" . $status['s_id'] . "' " . ($projectDataArray['status_id_fk'] == $status['s_id'] ? 'selected' : '') . ">" . $status['s_name'] . "</option>";
+								}
+							} 
+							else if ($user->checkUserRole(50) && !$user->checkUserRole(200)) 
+							{
+								if ($status['s_id'] == 1 || $status['s_id'] == 2 || $status['s_id'] == 3 || $status['s_id'] == 4) 
+								{
+									echo "<option class='d-none' value='" . $status['s_id'] . "' " . ($projectDataArray['status_id_fk'] == $status['s_id'] ? 'selected' : '') . ">" . $status['s_name'] . "</option>";
+								} else {
+									echo "<option value='" . $status['s_id'] . "' " . ($projectDataArray['status_id_fk'] == $status['s_id'] ? 'selected' : '') . ">" . $status['s_name'] . "</option>";
+								}
+							} 
+							else {
+								echo "<option value='" . $status['s_id'] . "' " . ($projectDataArray['status_id_fk'] == $status['s_id'] ? 'selected' : '') . ">" . $status['s_name'] . "</option>";
+							}
 						}
 					?>
 				</select>

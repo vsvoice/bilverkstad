@@ -18,13 +18,13 @@ $projects_by_status = [];
 $status_condition = [];
 if ($isBoss || $isAdmin) {
     // Boss and Admin see all projects
-    $status_condition = [1, 2, 3, 4, 5, 6, 7];
+    $status_condition = [1, 2, 3, 5, 6];
 } elseif ($isAccountant) {
     // Accountants see projects with status 3, 4 and 5
     $status_condition = [5, 6];
 } elseif ($isMechanic) {
     // Mechanics see projects with status 1, 2 and 3
-    $status_condition = [1, 2, 4, 5];
+    $status_condition = [1, 2, 5];
 }
 
 // Fetch projects from the database with joins based on the status condition
