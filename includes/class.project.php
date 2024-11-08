@@ -269,9 +269,8 @@ class Project {
             WHERE project_id = :projectId');
         $stmt->bindParam(':statusId', $statusId, PDO::PARAM_INT);
         $stmt->bindParam(':projectId', $projectId, PDO::PARAM_INT);
-        $stmt->execute();
-
-        if ($stmt->rowCount() > 0) {
+        
+        if ($stmt->execute()) {
             return true;  // Successfully updated the status
         } else {
             return false; // No rows affected or failed

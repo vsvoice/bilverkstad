@@ -74,12 +74,12 @@ class User {
         }
         // END Conditionally check passwords if they are provided
     
-        // START Check if user-entered email is a "real" address
+        // START Check if user-entered email is a proper email address
         if (!filter_var($umail, FILTER_VALIDATE_EMAIL)) {
             array_push($this->errorMessages, "E-postadressen är inte i rätt format!");
             $this->errorState = 1;
         }
-        // END Check if user-entered email is a "real" address
+        // END Check if user-entered email is a proper email address
     
         if ($this->errorState == 1) {
             return $this->errorMessages;
@@ -91,6 +91,7 @@ class User {
 
 
     public function register(string $uname, string $umail, string $upass, string $fname, string $lname) {
+        // Hash password and clean inputs
         $hashedPassword = password_hash($upass, PASSWORD_DEFAULT);
         $uname = $this->cleanInput($uname);
         $fname = $this->cleanInput($fname);
@@ -132,8 +133,10 @@ class User {
         // Save user data to an array
         $userData = $stmt_checkUsername->fetch();
 
+        // Check if password is correct
         if(password_verify($upass, $userData['u_password'])) {
 
+            // Check if user account is deactivated
             if ($userData['u_status'] === 0) {
                 array_push($this->errorMessages, "Detta konto har inaktiverats! Kontakta administratören och be om hjälp ");
                 return $this->errorMessages;
@@ -209,7 +212,8 @@ class User {
         $stmt_getUserDetails->bindParam(':uid', $uid, PDO::PARAM_INT);
         $stmt_getUserDetails->execute();
         $userDetails = $stmt_getUserDetails->fetch();
-    
+        
+        // If user edits their own data (legacy)
         if (isset($_POST['edit-user-submit'])) {
             // Check if entered password is correct
             if (!password_verify($upassold, $userDetails['u_password'])) {

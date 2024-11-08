@@ -68,8 +68,8 @@ if (!empty($status_condition)) {
         $statuses = [
             2 => "Pågående",
             1 => "I kö",
-            3 => "Avbokat",
-            4 => "Pausat",
+            3 => "Pausat",
+            4 => "Avbokat",
             5 => "Klart för fakturering",
             6 => "Fakturerat",
             7 => "Betalt"
