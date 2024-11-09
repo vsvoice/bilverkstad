@@ -1,6 +1,11 @@
 <?php
 include_once 'includes/header.php';
 
+if(isset($_SESSION['user_id'])) {
+	header("Location: home.php");  
+	exit();
+}
+
 if(isset($_POST['user-login'])) {
  $errorMessages = $user->login($_POST['uname'], $_POST['upass']);
 
